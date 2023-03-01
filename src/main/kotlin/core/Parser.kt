@@ -5,6 +5,7 @@ import com.github.h0tk3y.betterParse.combinators.separatedTerms
 import com.github.h0tk3y.betterParse.combinators.use
 import com.github.h0tk3y.betterParse.grammar.Grammar
 import com.github.h0tk3y.betterParse.lexer.regexToken
+import com.github.h0tk3y.betterParse.parser.Parser
 
 interface Item
 class Variable(val name: String, val value: String) : Item
@@ -14,7 +15,7 @@ class Substitution(val envname: String) : Item
 class Parser : Grammar<List<Item>>() {
     val envvar by regexToken("[ ]*[A-Za-z][A-Za-z0-9]+=[A-Za-z./0-9]+")
     val cmd by regexToken("[ ]*[A-Za-z]+([ ]+[A-Za-z./0-9\\-]+)*")
-    val subst by regexToken("\\$[A-Za-z][A-Za-z0-9]+")
+    val subst by regexToken("\\$[A-Za-z][A-Za-z0-9]+([ ]+[A-Za-z./0-9\\-]+)*")
     val pipe by regexToken("[ ]*\\|\\s+[ ]*")
 
     val substParser by subst use { Substitution(text.substring(1))}
@@ -24,11 +25,18 @@ class Parser : Grammar<List<Item>>() {
         val value = list[1]
         Variable(name, value)
     }
-    val parserCommandParser by cmd use {
+    val commandParser by cmd use {
         val list = text.split(" ")
         val name = list[0]
         ParserCommand(name, list.subList(1, list.size).joinToString(" "))
     }
 
-    override val rootParser by separatedTerms(substParser or variableParser or parserCommandParser, pipe)
+    override val rootParser: Parser<List<Item>>
+    by separatedTerms(
+        substParser or
+                variableParser or
+                commandParser
+        , acceptZero = true
+        , separator = pipe
+    )
 }

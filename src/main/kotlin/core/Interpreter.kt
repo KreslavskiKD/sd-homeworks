@@ -2,11 +2,7 @@ package core
 
 import com.github.h0tk3y.betterParse.grammar.parseToEnd
 import commands.Command
-import commands.runCommand
 import commands.runCommandDefault
-import java.io.File
-import java.io.IOException
-import java.nio.file.Paths
 import kotlin.system.exitProcess
 
 class Interpreter {
@@ -18,10 +14,16 @@ class Interpreter {
     }
 
     fun start() {
+        var flag = false
+        var buf = ""
         while (true) {
-            val input = readLine() ?: exitProcess(0)
+            val input: String = if (flag) {
+                flag = false
+                buf
+            } else {
+                readLine() ?: exitProcess(0)
+            }
             val res: List<Item> = Parser().parseToEnd(input)
-            var buf = ""
             res.forEach {
                 when (it) {
                     is Variable -> environmentVariables[it.name] = it.value
@@ -29,7 +31,7 @@ class Interpreter {
                         var newParams = it.params
                         if (buf != "") {
                             val additionalParams = buf
-                            newParams = additionalParams + " "+ it.params
+                            newParams = additionalParams + " " + it.params
                         }
                         if (registeredCommands.containsKey(it.name)) {
                             val command = registeredCommands[it.name]
@@ -47,7 +49,10 @@ class Interpreter {
                             buf = runCommandDefault(cmd)
                         }
                     }
-                    is Substitution -> println("Substitution envname: ${it.envname}")
+                    is Substitution -> {
+                        flag = true
+                        buf = environmentVariables[it.envname] ?: ""
+                    }
                 }
             }
             if (buf != "") {
