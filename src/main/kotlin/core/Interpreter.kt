@@ -1,6 +1,7 @@
 package core
 
 import com.github.h0tk3y.betterParse.grammar.parseToEnd
+import com.github.h0tk3y.betterParse.parser.ParseException
 import commands.Command
 import commands.runCommandDefault
 import kotlin.system.exitProcess
@@ -17,47 +18,107 @@ class Interpreter {
         var flag = false
         var buf = ""
         while (true) {
-            val input: String = if (flag) {
+            var input = ""
+            if (flag) {
                 flag = false
-                buf
+                input = buf
             } else {
-                readLine() ?: exitProcess(0)
+                input = readLine() ?: exitProcess(0)
             }
-            val res: List<Item> = Parser().parseToEnd(input)
-            res.forEach {
-                when (it) {
-                    is Variable -> environmentVariables[it.name] = it.value
-                    is ParserCommand -> {
-                        var newParams = it.params
-                        if (buf != "") {
-                            val additionalParams = buf
-                            newParams = additionalParams + " " + it.params
+            buf = ""
+            try {
+                val res: List<Item> = Parser().parseToEnd(input)
+                res.forEach {
+                    when (it) {
+                        is Variable -> {
+                            environmentVariables[it.name] = it.value
                         }
-                        if (registeredCommands.containsKey(it.name)) {
-                            val command = registeredCommands[it.name]
-                            if (command == null) {
-                                val cmd = it.name + " " + it.params
-                                buf = runCommandDefault(cmd)
-                            } else {
-                                command.run(newParams)
-                                if (command.returnsResult()) {
-                                    buf = command.result
+                        is VariableWithSubstitution -> {
+                            val newValueWithSubstitution = it.valueWithSubstitution.replace("$", "$#")
+                            val list = newValueWithSubstitution.split("$").toMutableList()
+                            for (i in 0 until list.size) {
+                                if (list[i].startsWith("#")) {
+                                    val envname = list[i].substring(1)
+                                    list[i] = environmentVariables[envname]
+                                        ?: throw InterpreterException("No such variable $envname in environment")
                                 }
                             }
-                        } else {
-                            val cmd = it.name + " " + it.params
-                            buf = runCommandDefault(cmd)
+                            environmentVariables[it.name] = list.joinToString("")
+                        }
+                        is ParserCommand -> {
+                            var newParams = it.params
+                            if (buf != "") {
+                                val additionalParams = buf
+                                newParams = additionalParams + " " + it.params
+                            }
+                            if (registeredCommands.containsKey(it.name)) {
+                                val command = registeredCommands[it.name]
+                                if (command == null) {
+                                    val cmd = it.name + " " + newParams
+                                    buf = runCommandDefault(cmd)
+                                } else {
+                                    command.run(newParams)
+                                    if (command.returnsResult()) {
+                                        buf = command.result
+                                    }
+                                }
+                            } else {
+                                val cmd = it.name + " " + newParams
+                                buf = runCommandDefault(cmd)
+                            }
+                        }
+                        is ParserCommandWithSubstitution -> {
+                            var newParams = it.paramsWithSubstitution
+                            if (buf != "") {
+                                val additionalParams = buf
+                                newParams = additionalParams + " " + it.paramsWithSubstitution
+                            }
+                            val list = newParams.split("$").toMutableList()
+                            for (i in 0..list.size) {
+                                if (list[i].startsWith("$")) {
+                                    val envname = list[i].substring(1)
+                                    list[i] = environmentVariables[envname]
+                                        ?: throw InterpreterException("No such variable $envname in environment")
+                                }
+                            }
+                            newParams = list.joinToString()
+                            if (registeredCommands.containsKey(it.name)) {
+                                val command = registeredCommands[it.name]
+                                if (command == null) {
+                                    val cmd = it.name + " " + newParams
+                                    buf = runCommandDefault(cmd)
+                                } else {
+                                    command.run(newParams)
+                                    if (command.returnsResult()) {
+                                        buf = command.result
+                                    }
+                                }
+                            } else {
+                                val cmd = it.name + " " + newParams
+                                buf = runCommandDefault(cmd)
+                            }
+                        }
+                        is Substitutions -> {
+                            flag = true
+                            it.envnames.forEach { name ->
+                                if (name != "") {
+                                    buf += environmentVariables[name]
+                                        ?: throw InterpreterException("No such variable $name in environment")
+                                }
+                            }
                         }
                     }
-                    is Substitution -> {
-                        flag = true
-                        buf = environmentVariables[it.envname] ?: ""
-                    }
                 }
-            }
-            if (buf != "") {
-                println(buf)
+                if (buf != "") {
+                    println(buf)
+                }
+            } catch (e: ParseException) {
+                println(e.message)
+            } catch (e: InterpreterException) {
+                println(e.message)
             }
         }
     }
 }
+
+class InterpreterException(msg: String) : Exception(msg) {}
