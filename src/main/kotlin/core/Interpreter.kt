@@ -30,9 +30,6 @@ class Interpreter {
                 val res: List<Item> = Parser().parseToEnd(input)
                 res.forEach {
                     when (it) {
-                        is Variable -> {
-                            environmentVariables[it.name] = it.value
-                        }
                         is VariableWithSubstitution -> {
                             val newValueWithSubstitution = it.valueWithSubstitution.replace("$", "$#")
                             val list = newValueWithSubstitution.split("$").toMutableList()
@@ -45,43 +42,22 @@ class Interpreter {
                             }
                             environmentVariables[it.name] = list.joinToString("")
                         }
-                        is ParserCommand -> {
-                            var newParams = it.params
-                            if (buf != "") {
-                                val additionalParams = buf
-                                newParams = additionalParams + " " + it.params
-                            }
-                            if (registeredCommands.containsKey(it.name)) {
-                                val command = registeredCommands[it.name]
-                                if (command == null) {
-                                    val cmd = it.name + " " + newParams
-                                    buf = runCommandDefault(cmd)
-                                } else {
-                                    command.run(newParams)
-                                    if (command.returnsResult()) {
-                                        buf = command.result
-                                    }
-                                }
-                            } else {
-                                val cmd = it.name + " " + newParams
-                                buf = runCommandDefault(cmd)
-                            }
-                        }
                         is ParserCommandWithSubstitution -> {
                             var newParams = it.paramsWithSubstitution
                             if (buf != "") {
                                 val additionalParams = buf
                                 newParams = additionalParams + " " + it.paramsWithSubstitution
                             }
+                            newParams = newParams.replace("$", "$#")
                             val list = newParams.split("$").toMutableList()
-                            for (i in 0..list.size) {
-                                if (list[i].startsWith("$")) {
+                            for (i in 0 until list.size) {
+                                if (list[i].startsWith("#")) {
                                     val envname = list[i].substring(1)
                                     list[i] = environmentVariables[envname]
                                         ?: throw InterpreterException("No such variable $envname in environment")
                                 }
                             }
-                            newParams = list.joinToString()
+                            newParams = list.joinToString("")
                             if (registeredCommands.containsKey(it.name)) {
                                 val command = registeredCommands[it.name]
                                 if (command == null) {
