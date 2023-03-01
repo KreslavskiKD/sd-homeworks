@@ -1,5 +1,6 @@
 import commands.EchoCommand
 import commands.ExitCommand
+import commands.PwdCommand
 import core.*
 
 /**
@@ -10,6 +11,7 @@ fun main(args: Array<String>) {
 
     interpreter.registerCommand("echo", EchoCommand())
     interpreter.registerCommand("exit", ExitCommand())
+    interpreter.registerCommand("pwd", PwdCommand())
 
     interpreter.start()
 }
