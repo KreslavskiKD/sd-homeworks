@@ -12,7 +12,7 @@ class ParserCommandWithSubstitution(val name: String, val paramsWithSubstitution
 
 class Parser : Grammar<List<Item>>() {
     val envvarws by regexToken("[A-Za-z][A-Za-z0-9]*[=](([A-Za-z./0-9]+)|(\\$[A-Za-z][A-Za-z0-9]*)+)+")
-    val cmdws by regexToken("(([A-Za-z]+([ ]+[A-Za-z./0-9\\-]+)*)+)(([A-Za-z]+([ ]+[A-Za-z./0-9\\-]+)*)|([ ]*\\$[A-Za-z][A-Za-z0-9]*)+)*")
+    val cmdws by regexToken("(([A-Za-z]+([ ]+[A-Za-z./0-9\\-]+)*)+)((\'[^\']*\')|(\"[^\"]*\")|([A-Za-z]+([ ]+[A-Za-z./0-9\\-]+)*)|([ ]*\\$[A-Za-z][A-Za-z0-9]*)+)*")
     val substs by regexToken("(\\$[A-Za-z][A-Za-z0-9]*)+")
     val pipe by regexToken("[ ]*\\|\\s+[ ]*")
 
