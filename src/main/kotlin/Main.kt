@@ -1,3 +1,4 @@
+import commands.EchoCommand
 import core.*
 
 /**
@@ -5,5 +6,8 @@ import core.*
  */
 fun main(args: Array<String>) {
     val interpreter = Interpreter()
+
+    interpreter.registerCommand("echo", EchoCommand())
+
     interpreter.start()
 }
