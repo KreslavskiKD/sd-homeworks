@@ -10,7 +10,11 @@ public class CatCommand implements Command {
     private String result = "";
 
     @Override
-    public void run(String params) {
+    public void run(String params, boolean piped) {
+        if (piped) {
+            result = params;
+            return;
+        }
         Scanner scanner;
         if (params.isEmpty()) {
             scanner = new Scanner(System.in);

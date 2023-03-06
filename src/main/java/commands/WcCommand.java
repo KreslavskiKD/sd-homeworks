@@ -2,10 +2,9 @@ package commands;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileStore;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 class FileStat {
@@ -28,17 +27,32 @@ public class WcCommand implements Command {
     FileStat fileStat;
 
     @Override
-    public void run(String params) {
-        Path path = Path.of(params);
+    public void run(String params, boolean piped) {
+        long byteCount;
+        long lineCount = 0;
+        long wordCount = 0;
+        if (piped) {
+            byteCount = params.getBytes().length;
+            lineCount = params.lines().count();
+            wordCount = Arrays.stream(params.split("\\s+")).count();
+            fileStat = new FileStat(byteCount, lineCount, wordCount);
+            return;
+        }
+        Path path;
+        try {
+            path = Path.of(params);
+        } catch (InvalidPathException e) {
+            System.out.println(e.getMessage());
+            fileStat = null;
+            return;
+        }
         if (!Files.exists(path)) {
             System.out.println("File doesn't exist");
             fileStat = null;
             return;
         }
         File file = new File(params);
-        long byteCount = file.length();
-        long lineCount = 0;
-        long wordCount = 0;
+        byteCount = file.length();
         try (var stream  = Files.lines(path)) {
             lineCount = stream.count();
         } catch (IOException e) {

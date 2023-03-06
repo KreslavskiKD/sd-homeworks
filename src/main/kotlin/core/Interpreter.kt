@@ -14,11 +14,23 @@ class Interpreter {
         registeredCommands[name] = cmd
     }
 
+    private fun applySubstitutions(command: String): MutableList<String> {
+        val list = command.split("$").toMutableList()
+        for (i in 0 until list.size) {
+            if (list[i].startsWith("#")) {
+                val envname = list[i].substring(1)
+                list[i] = environmentVariables[envname]
+                    ?: throw InterpreterException("No such variable $envname in environment")
+            }
+        }
+        return list
+    }
+
     fun start() {
         var flag = false
         var buf = ""
         while (true) {
-            var input = ""
+            var input: String
             if (flag) {
                 flag = false
                 input = buf
@@ -27,20 +39,14 @@ class Interpreter {
             }
             buf = ""
             try {
-                val res: List<Item> = Parser().parseToEnd(input)
+                val res: List<Item> = Parser().parseToEnd(input.trim())
+                var operationCount = 0
                 res.forEach {
+                    operationCount++
                     when (it) {
                         is VariableWithSubstitution -> {
                             val newValueWithSubstitution = it.valueWithSubstitution.replace("$", "$#")
-                            val list = newValueWithSubstitution.split("$").toMutableList()
-                            for (i in 0 until list.size) {
-                                if (list[i].startsWith("#")) {
-                                    val envname = list[i].substring(1)
-                                    list[i] = environmentVariables[envname]
-                                        ?: throw InterpreterException("No such variable $envname in environment")
-                                }
-                            }
-                            environmentVariables[it.name] = list.joinToString("")
+                            environmentVariables[it.name] = applySubstitutions(newValueWithSubstitution).joinToString("")
                         }
                         is ParserCommandWithSubstitution -> {
                             var newParams = it.paramsWithSubstitution
@@ -49,22 +55,15 @@ class Interpreter {
                                 newParams = additionalParams + " " + it.paramsWithSubstitution
                             }
                             newParams = newParams.replace("$", "$#")
-                            val list = newParams.split("$").toMutableList()
-                            for (i in 0 until list.size) {
-                                if (list[i].startsWith("#")) {
-                                    val envname = list[i].substring(1)
-                                    list[i] = environmentVariables[envname]
-                                        ?: throw InterpreterException("No such variable $envname in environment")
-                                }
-                            }
-                            newParams = list.joinToString("")
+                            newParams = applySubstitutions(newParams).joinToString("")
+
                             if (registeredCommands.containsKey(it.name)) {
                                 val command = registeredCommands[it.name]
                                 if (command == null) {
                                     val cmd = it.name + " " + newParams
                                     buf = runCommandDefault(cmd)
                                 } else {
-                                    command.run(newParams)
+                                    command.run(newParams, operationCount > 1)
                                     if (command.returnsResult()) {
                                         buf = command.result
                                     }
@@ -97,4 +96,4 @@ class Interpreter {
     }
 }
 
-class InterpreterException(msg: String) : Exception(msg) {}
+class InterpreterException(msg: String) : Exception(msg)

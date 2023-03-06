@@ -3,7 +3,7 @@ package commands
 import kotlin.system.exitProcess
 
 class ExitCommand : Command {
-    override fun run(params: String?) {
+    override fun run(params: String?, piped: Boolean) {
         exitProcess(0)
     }
 

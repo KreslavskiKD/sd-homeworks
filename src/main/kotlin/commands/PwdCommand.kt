@@ -5,7 +5,7 @@ import java.nio.file.Paths
 class PwdCommand : Command {
     private var result = ""
 
-    override fun run(params: String?) {
+    override fun run(params: String?, piped: Boolean) {
         result = Paths.get("").toAbsolutePath().toString()
     }
 
