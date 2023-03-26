@@ -7,6 +7,7 @@ Repository for all homeworks on Software Design course at HSE
 ![ER diagram](task1-er-diag.png)
 
 ## Задание 2
+![Component diagram](task2-component-diag.png)
 
 ## Задание 3
 
