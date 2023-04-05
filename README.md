@@ -10,4 +10,4 @@ Repository for all homeworks on Software Design course at HSE
 ![State state machine](ht05-state-diagram.png)
 
 ## Задание 3
-![Scenario timeflow diagram](todo.png)
+![Scenario timeflow diagram](ht05-3.png)
