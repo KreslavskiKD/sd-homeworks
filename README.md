@@ -10,4 +10,4 @@ Repository for all homeworks on Software Design course at HSE
 ![Component diagram](task2-component-diag.png)
 
 ## Задание 3
-
+![task for Sasha](todo.png)
