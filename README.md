@@ -7,7 +7,7 @@ Repository for all homeworks on Software Design course at HSE
 ![Task for Sasha](todo.png)
 
 ## Задание 2
-![State state machine](ht05-state-diagram.png)
+![State state machine](ht05-state-diagram-v2.png)
 
 ## Задание 3
 ![Scenario timeflow diagram](ht05-3.png)
