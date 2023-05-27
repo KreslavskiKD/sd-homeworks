@@ -22,6 +22,7 @@ class Assets {
     }
 
     companion object {
+
         val bucketTexture = AssetDescriptor(
             "textures/bucket.png",
             Texture::class.java
@@ -30,10 +31,14 @@ class Assets {
             "textures/drop.png",
             Texture::class.java
         )
+
+        // sounds assets
         val dropletSound = AssetDescriptor(
             "sounds/drop.wav",
             Sound::class.java
         )
+
+        // music assets
         val rainSound = AssetDescriptor(
             "sounds/rain.mp3",
             Music::class.java
