@@ -13,16 +13,16 @@ class MainGame : Game() {
 
     override fun create() {
         batch = SpriteBatch()
-        font = BitmapFont() // use libGDX's default Arial font
+        font = BitmapFont()
         val assets = Assets()
-        assets.load() //starts loading assets
+        assets.load()
 
         assets.manager.finishLoading()
         setScreen(MainMenuScreen(this, assets))
     }
 
     override fun render() {
-        super.render() // important!
+        super.render()
     }
 
     override fun dispose() {
