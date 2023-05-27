@@ -4,14 +4,19 @@ import com.badlogic.gdx.math.MathUtils.random
 import com.badlogic.gdx.utils.Array
 
 class Map(
-    width : Int,
-    height : Int,
+    private val width : Int,
+    private val height : Int,
     levelDescription: LevelDescription,
 ) {
 
-    private val mapRooms = Array<Array<Room>>()
-    private val centerH = height / 2
-    private val centerW = width / 2
+    // from top to bottom from left to right
+    // 1.1 1.2 1.3 ... 1.w
+    // 2.1 2.2 2.3 ... 2.w
+    // ... ... ...
+    // h.1 h.2 h.3 ... h.w
+    val mapRooms = Array<Array<Room>>()
+    val centerH = height / 2
+    val centerW = width / 2
 
     var finishH = random.nextInt(height)
     var finishW = random.nextInt(width)
@@ -100,6 +105,61 @@ class Map(
 
         // generate paths
 
+        // generate some path from start to the finish
+        dfs(centerH, centerW)
+
+        // maybe we should make some more paths?
+
+    }
+
+    private fun dfs(i: Int, j: Int): Boolean {
+        if (i == finishH && j == finishW) {
+            return true
+        }
+
+        mapRooms[i][j].visited = true
+
+        val directions = listOf(Direction.top, Direction.bottom, Direction.left, Direction.right).shuffled()
+        for (direction in directions) {
+            when (direction) {
+                Direction.top -> {
+                    if (i > 0) {
+                        mapRooms[i][j].top = mapRooms[i - 1][j]
+                        if (dfs(i - 1, j)) {
+                            return true
+                        }
+                    }
+                }
+                Direction.bottom -> {
+                    if (i < height - 1) {
+                        mapRooms[i][j].bottom = mapRooms[i + 1][j]
+                        if (dfs(i + 1, j)) {
+                            return true
+                        }
+                    }
+                }
+                Direction.left -> {
+                    if (j > 0) {
+                        mapRooms[i][j].left = mapRooms[i][j - 1]
+                        if (dfs(i, j - 1)) {
+                            return true
+                        }
+                    }
+                }
+                Direction.right -> {
+                    if (j < width - 1) {
+                        mapRooms[i][j].right = mapRooms[i][j + 1]
+                        if (dfs(i, j + 1)) {
+                            return true
+                        }
+                    }
+                }
+                Direction.none -> { // bruh wtf it ain't possible
+                    return false
+                }
+            }
+        }
+        return false
     }
 
 }
