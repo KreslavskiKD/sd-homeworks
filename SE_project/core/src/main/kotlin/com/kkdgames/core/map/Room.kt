@@ -15,8 +15,6 @@ class Room {
     var start : Boolean = false
     var boss: Boolean = false
     var visited: Boolean = false
-
-
 }
 
 enum class Direction {

@@ -22,14 +22,14 @@ class MainMenuScreen(private var game: MainGame, val assets: Assets):Screen {
         camera.update()
         game.batch.projectionMatrix = camera.combined
 
-        game.batch.begin();
+        game.batch.begin()
         game.font.draw(game.batch, "Welcome", 100f, 150f);
         game.font.draw(game.batch, "Tap anywhere to begin!", 100f, 100f);
-        game.batch.end();
+        game.batch.end()
 
         if (Gdx.input.isTouched) {
             game.screen = GameScreen(game, assets)
-            dispose();
+            dispose()
         }
     }
 

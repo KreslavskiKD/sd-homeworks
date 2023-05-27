@@ -37,7 +37,7 @@ class GameScreen(val game: MainGame, val assets: Assets) : Screen {
     }
 
     private fun setupStage() {
-        stage.addActor(Player(assets.manager.get(Assets.playerTexture), viewportHeight / 3.5f))
+        stage.addActor(Player(assets.manager.get(Assets.playerFirstStageTexture), viewportHeight / 3.5f))
     }
 
     override fun render(delta: Float) {
