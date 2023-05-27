@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm")
 }
 
-val assetsDir = file("../android/assets")
+val assetsDir = file("../assets")
 val mainClassName = "com.kkdgames.desktop.DesktopLauncher"
 
 dependencies {

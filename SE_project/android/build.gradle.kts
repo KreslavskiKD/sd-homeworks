@@ -9,7 +9,7 @@ android {
     sourceSets {
         named("main") {
             res.srcDir("res")
-            assets.srcDir("assets")
+            assets.srcDir("../assets")
             jniLibs.srcDir("libs")
         }
     }
