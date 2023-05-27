@@ -1,4 +1,4 @@
-package javagame.core.models;
+package com.kkdgames.core.models;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.viewport.ScalingViewport
 import com.kkdgames.core.MainGame
 import com.kkdgames.core.util.Assets
-import javagame.core.models.Player
+import com.kkdgames.core.models.Player
 
 class GameScreen(val game: MainGame, val assets: Assets) : Screen {
     private var camera: OrthographicCamera = OrthographicCamera()
