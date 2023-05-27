@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Scaling
@@ -41,8 +43,14 @@ class GameScreen(val game: MainGame, val assets: Assets) : Screen {
     }
 
     override fun render(delta: Float) {
+        val backgroundTexture = assets.manager.get(Assets.background1)
+        val backgroundSprite = Sprite(backgroundTexture)
         Gdx.gl.glClearColor(0F, 0F, 0.2f, 1F)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
+
+        game.batch.begin()
+        backgroundSprite.draw(game.batch, 1F)
+        game.batch.end()
 
         camera.update()
         game.batch.projectionMatrix = camera.combined

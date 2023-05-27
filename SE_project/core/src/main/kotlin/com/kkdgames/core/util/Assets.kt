@@ -10,6 +10,7 @@ class Assets {
     fun load() {
         manager.load(playerFirstStageTexture)
         manager.load(playerTexture)
+        manager.load(background1)
     }
 
     fun dispose() {
@@ -24,6 +25,11 @@ class Assets {
 
         val playerTexture = AssetDescriptor(
             "textures/pickle-pixel.png",
+            Texture::class.java
+        )
+
+        val background1 = AssetDescriptor(
+            "backgrounds/background1.png",
             Texture::class.java
         )
     }
