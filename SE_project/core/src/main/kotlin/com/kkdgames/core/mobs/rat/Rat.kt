@@ -30,7 +30,7 @@ class Rat (private val texture: Texture,
     private val attackDistance: Float = 25f
     private var lastAttackTime: Long = 0
     private var attackPeriodMillis: Long = 3 * 1000
-    private var attackPower: Int = 15
+    private var attackPower: Int = 25
 
     private val maxHealth = 100
     var health: Int = maxHealth
@@ -97,6 +97,7 @@ class Rat (private val texture: Texture,
 
 
     override fun attackingStrategy() {
+        currentStep = 4F
         val distToTargetX = getCenterX() - curTargetPosX
         val distToTargetY = getCenterY() - curTargetPosY
         val absDistToTargetY = abs(distToTargetY)

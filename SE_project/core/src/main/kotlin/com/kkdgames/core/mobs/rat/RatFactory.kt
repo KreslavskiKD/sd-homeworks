@@ -15,7 +15,11 @@ class RatFactory (
 ): MobFactory {
     override fun giveMob(): Actor {
         return Rat(
-            texture = assets.manager.get(Assets.ratTexture),
+            texture = if (strategy != Rat.Companion.Strategies.ATTACKING) {
+                assets.manager.get(Assets.ratTexture)
+            } else {
+                assets.manager.get(Assets.ratAggressiveTexture)
+                   },
             sound = assets.manager.get(Assets.biteSound),
             target = player,
             heightT = viewportHeight / 3.5f,    // maybe should be changed later
