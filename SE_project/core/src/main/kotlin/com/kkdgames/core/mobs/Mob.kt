@@ -26,7 +26,10 @@ open class Mob(
 
     private var curTargetPosX: Float = 0.0f
     private var curTargetPosY: Float = 0.0f
+
     private val attackDistance: Float = 25f
+    private val consideredSafeDistance: Float = 150f
+
     private var lastAttackTime: Long = 0
     private var attackPeriodMillis: Long = 3 * 1000
     private var attackPower: Int = 15
@@ -132,7 +135,22 @@ open class Mob(
     }
 
     private fun gettingAwayStrategy() {
-        // TODO
+        val distToTargetX = getCenterX() - curTargetPosX
+        val distToTargetY = getCenterY() - curTargetPosY
+        val absDistToTargetY = abs(distToTargetY)
+        val absDistToTargetX = abs(distToTargetX)
+
+        if (absDistToTargetY < consideredSafeDistance || absDistToTargetX < consideredSafeDistance) {
+            if (absDistToTargetY > absDistToTargetX) {
+                if (absDistToTargetY > attackDistance) {
+                    y += sign(distToTargetY) * currentStep
+                }
+            } else {
+                if (absDistToTargetX > attackDistance) {
+                    x += sign(distToTargetX) * currentStep
+                }
+            }
+        }
     }
 
     fun receiveDamage(damage: Int) {

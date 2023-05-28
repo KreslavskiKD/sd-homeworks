@@ -45,7 +45,7 @@ class GameScreen(private val game: MainGame, assets: Assets) : Screen {
 
     private val backgroundTexture: Texture
 
-    private val gates: com.badlogic.gdx.utils.Array<Gate>
+    private val gates: Array<Gate>
 
     private val passiveCockroachFactory = CockroachFactory(
         assets = assets,
