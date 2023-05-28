@@ -6,14 +6,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
+import com.kkdgames.core.loot.Loot;
 
 public class Player extends Actor {
     private float posX;
     private float posY;
     private final float scale;
 
+    private float currentStep;      // not final because later some loot from inventory can increase the speed
+
     private final Texture texture;
-    private final Array<String> inventory;
+    private final Array<Loot> inventory;
     private int health;
 
     public Player(Texture texture, float height) {
@@ -22,8 +25,9 @@ public class Player extends Actor {
 
         posX = 0;
         posY = 0;
-        inventory = new Array<String>();
+        inventory = new Array<Loot>();
         health = 10;
+        currentStep = 2F;
     }
 
     public int getHealth() {
@@ -34,25 +38,23 @@ public class Player extends Actor {
         this.health = health;
     }
 
-    public Array<String> getInventory() {
+    public Array<Loot> getInventory() {
         return inventory;
     }
 
     @Override
     public void act(float delta) {
-        final float step = 2f;
-
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
-            posX -= step;
+            posX -= currentStep;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-            posX += step;
+            posX += currentStep;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-            posY += step;
+            posY += currentStep;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
-            posY -= step;
+            posY -= currentStep;
         }
     }
 
