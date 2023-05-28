@@ -10,8 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.viewport.ScalingViewport
 import com.kkdgames.core.MainGame
-import com.kkdgames.core.util.Assets
 import com.kkdgames.core.models.Player
+import com.kkdgames.core.util.Assets
 
 class GameScreen(val game: MainGame, val assets: Assets) : Screen {
     private var camera: OrthographicCamera = OrthographicCamera()
@@ -42,8 +42,8 @@ class GameScreen(val game: MainGame, val assets: Assets) : Screen {
             Player(
                 assets.manager.get(Assets.playerFirstStageTexture),
                 viewportHeight / 3.5f,
-                viewportHeight / 2,     // i wanted player to be spawned in the middle of the screen, yet it doesn't
                 viewportWidth / 2,
+                viewportHeight / 2,
             )
         )
     }
