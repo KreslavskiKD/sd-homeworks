@@ -19,12 +19,12 @@ public class Player extends Actor {
     private final Array<Loot> inventory;
     private int health;
 
-    public Player(Texture texture, float height) {
+    public Player(Texture texture, float height, float spawnPointX, float spawnPointY) {
         this.texture = texture;
         this.scale = height / texture.getHeight();
 
-        posX = 0;
-        posY = 0;
+        posX = spawnPointX;
+        posY = spawnPointY;
         inventory = new Array<Loot>();
         health = 10;
         currentStep = 2F;
