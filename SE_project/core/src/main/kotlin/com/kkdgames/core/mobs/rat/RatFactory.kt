@@ -16,6 +16,8 @@ class RatFactory (
     override fun giveMob(): Actor {
         return Rat(
             texture = assets.manager.get(Assets.ratTexture),
+            sound = assets.manager.get(Assets.biteSound),
+            target = player,
             heightT = viewportHeight / 3.5f,    // maybe should be changed later
             strategy = strategy,
             spawnPointX = MathUtils.random.nextFloat() * viewportHeight,

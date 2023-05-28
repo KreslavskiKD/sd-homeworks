@@ -34,18 +34,13 @@ class Cockroach(
     private val maxHealth = 100
     var health: Int = maxHealth
 
-    private val halvedTextureWidth: Float
-    private val halvedTextureHeight: Float
-    private var font: BitmapFont
+    private val halvedTextureWidth: Float = texture.width / 2f * scale
+    private val halvedTextureHeight: Float = texture.height / 2f * scale
+    private var font: BitmapFont = FontSizeHandler.INSTANCE.getFont((texture.width / 2 * scale).toInt(), Color.DARK_GRAY)
 
     init {
         x = spawnPointX - texture.width / 2 * scale
         y = spawnPointY - texture.height / 2 * scale
-
-        halvedTextureWidth = texture.width / 2f * scale
-        halvedTextureHeight = texture.height / 2f * scale
-
-        font = FontSizeHandler.INSTANCE.getFont((texture.width / 2 * scale).toInt(), Color.DARK_GRAY)
     }
 
     override fun act(delta: Float) {
@@ -131,16 +126,16 @@ class Cockroach(
         // TODO
     }
 
+    override fun draw(batch: Batch, parentAlpha: Float) {
+        font.draw(batch, health.toString(), x, y)
+        batch.draw(texture, x, y, texture.width * scale, texture.height * scale)
+    }
+
     companion object {
         enum class Strategies {
             PASSIVE,
             ATTACKING,
             GETTING_AWAY,
         }
-    }
-
-    override fun draw(batch: Batch, parentAlpha: Float) {
-        font.draw(batch, health.toString(), x, y)
-        batch.draw(texture, x, y, texture.width * scale, texture.height * scale)
     }
 }
