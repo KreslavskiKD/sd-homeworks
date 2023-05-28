@@ -11,14 +11,14 @@ class CockroachFactory(
     private val player: Player,
     private val viewportHeight: Float,
     private val viewportWidth: Float,
-    private val strategy: Cockroach.Companion.Strategies,
+    private val strategy: Mob.Companion.Strategies,
 ): MobFactory {
     override fun giveMob(): Mob {
         return Cockroach(
             texture = assets.manager.get(Assets.cockroachTexture),
             sound = assets.manager.get(Assets.biteSound),
             target = player,
-            heightT = viewportHeight / 4f,
+            height0 = viewportHeight / 4f,
             strategy = strategy,
             spawnPointX = random.nextFloat() * viewportHeight,
             spawnPointY = random.nextFloat() * viewportWidth,
