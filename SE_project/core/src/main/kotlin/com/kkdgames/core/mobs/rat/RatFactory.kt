@@ -1,7 +1,7 @@
 package com.kkdgames.core.mobs.rat
 
 import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.scenes.scene2d.Actor
+import com.kkdgames.core.mobs.Mob
 import com.kkdgames.core.mobs.MobFactory
 import com.kkdgames.core.models.Player
 import com.kkdgames.core.util.Assets
@@ -13,7 +13,7 @@ class RatFactory (
     private val player: Player,
     private val strategy: Rat.Companion.Strategies,
 ): MobFactory {
-    override fun giveMob(): Actor {
+    override fun giveMob(): Mob {
         return Rat(
             texture = if (strategy != Rat.Companion.Strategies.ATTACKING) {
                 assets.manager.get(Assets.ratTexture)
