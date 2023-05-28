@@ -11,6 +11,7 @@ dependencies {
     implementation(kotlin("stdlib"))
 
     implementation("com.badlogicgames.gdx:gdx:$gdxVersion")
+    implementation("com.badlogicgames.gdx:gdx-freetype:$gdxVersion")
 
     // LibKTX kotlin extensions, optional but recommended.
     // The complete list of modules is available at https://github.com/libktx/ktx
@@ -24,7 +25,6 @@ dependencies {
     // If you're using https://github.com/BlueBoxWare/LibGDXPlugin
     // this dependency provides the @GDXAssets annotation.
     compileOnly("com.gmail.blueboxware:libgdxpluginannotations:1.16")
-    
     testImplementation("junit:junit:$junitVersion")
 }
 

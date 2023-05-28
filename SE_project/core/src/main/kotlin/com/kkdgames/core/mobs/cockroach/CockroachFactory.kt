@@ -1,20 +1,24 @@
 package com.kkdgames.core.mobs.cockroach
 
 import com.badlogic.gdx.math.MathUtils.random
-import com.badlogic.gdx.scenes.scene2d.Actor
+import com.kkdgames.core.mobs.Mob
 import com.kkdgames.core.mobs.MobFactory
+import com.kkdgames.core.models.Player
 import com.kkdgames.core.util.Assets
 
 class CockroachFactory(
     private val assets: Assets,
+    private val player: Player,
     private val viewportHeight: Float,
     private val viewportWidth: Float,
 ): MobFactory {
-    override fun giveMob(): Actor {
+    override fun giveMob(): Mob {
         return Cockroach(
             texture = assets.manager.get(Assets.cockroachTexture),
-            heightT = viewportHeight / 3.5f,    // maybe should be changed later
-            strategy = Cockroach.Companion.Strategies.PASSIVE,
+            sound = assets.manager.get(Assets.biteSound),
+            target = player,
+            heightT = viewportHeight / 4f,
+            strategy = Cockroach.Companion.Strategies.ATTACKING,
             spawnPointX = random.nextFloat() * viewportHeight,
             spawnPointY = random.nextFloat() * viewportWidth,
         )

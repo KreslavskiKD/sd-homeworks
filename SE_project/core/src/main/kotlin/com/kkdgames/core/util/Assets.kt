@@ -2,6 +2,7 @@ package com.kkdgames.core.util
 
 import com.badlogic.gdx.assets.AssetDescriptor
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Texture
 
 class Assets {
@@ -11,6 +12,8 @@ class Assets {
         manager.load(playerFirstStageTexture)
         manager.load(playerTexture)
         manager.load(background1)
+        manager.load(cockroachTexture)
+        manager.load(biteSound)
     }
 
     fun dispose() {
@@ -41,6 +44,11 @@ class Assets {
         val background1 = AssetDescriptor(
             "backgrounds/background1.png",
             Texture::class.java
+        )
+
+        val  biteSound = AssetDescriptor(
+            "sounds/mob_bite.wav",
+            Sound::class.java
         )
     }
 }
