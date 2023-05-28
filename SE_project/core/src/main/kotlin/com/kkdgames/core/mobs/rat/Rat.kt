@@ -23,8 +23,11 @@ class Rat (private val texture: Texture,
             Strategies.PASSIVE -> {
                 passiveStrategy(delta)
             }
-            Strategies.AGRESSIVE -> {
-
+            Strategies.ATTACKING -> {
+                // todo
+            }
+            Strategies.GETTING_AWAY -> {
+                // todo
             }
         }
     }
@@ -64,7 +67,8 @@ class Rat (private val texture: Texture,
     companion object {
         enum class Strategies {
             PASSIVE,
-            AGRESSIVE,
+            ATTACKING,
+            GETTING_AWAY,
         }
     }
 }

@@ -135,7 +135,7 @@ class Cockroach(
         enum class Strategies {
             PASSIVE,
             ATTACKING,
-            GETTING_AWAY
+            GETTING_AWAY,
         }
     }
 

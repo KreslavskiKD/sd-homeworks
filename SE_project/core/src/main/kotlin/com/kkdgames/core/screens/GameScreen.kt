@@ -16,6 +16,8 @@ import com.kkdgames.core.map.LevelDescription
 import com.kkdgames.core.mobs.cockroach.CockroachFactory
 import com.kkdgames.core.mobs.rat.RatFactory
 import com.kkdgames.core.mobs.Mob
+import com.kkdgames.core.mobs.cockroach.Cockroach
+import com.kkdgames.core.mobs.rat.Rat
 import com.kkdgames.core.models.Player
 import com.kkdgames.core.util.Assets
 
@@ -42,41 +44,68 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
 
     private var mobGroup: Group
 
-    private val cockroachFactory = CockroachFactory(
+    private val passiveCockroachFactory = CockroachFactory(
         assets = assets,
         viewportHeight = viewportHeight,
         viewportWidth = viewportWidth,
         player = player,
+        strategy = Cockroach.Companion.Strategies.PASSIVE,
+    )
+
+    private val aggressiveCockroachFactory = CockroachFactory(
+        assets = assets,
+        viewportHeight = viewportHeight,
+        viewportWidth = viewportWidth,
+        player = player,
+        strategy = Cockroach.Companion.Strategies.ATTACKING,
     )
 
     private val ratFactory = RatFactory(
         assets = assets,
         viewportHeight = viewportHeight,
         viewportWidth = viewportWidth,
+        player = player,
+        strategy = Rat.Companion.Strategies.ATTACKING,
     )
 
     private val levels = listOf(
         LevelDescription(
             levelNum = 1,
-            mobsProbability = listOf(Pair(cockroachFactory, 0.4F), Pair(ratFactory, 0.1F)),
+            mobsProbability = listOf(
+                Pair(passiveCockroachFactory, 0.4F),
+                Pair(aggressiveCockroachFactory, 0.05F),
+                Pair(ratFactory, 0.1F),
+            ),
             lootProbability = listOf(),     // todo
             maxBosses = 1,
         ),
         LevelDescription(
             levelNum = 2,
-            mobsProbability = listOf(Pair(cockroachFactory, 0.4F), Pair(ratFactory, 0.4F)),
+            mobsProbability = listOf(
+                Pair(passiveCockroachFactory, 0.4F),
+                Pair(aggressiveCockroachFactory, 0.05F),
+                Pair(ratFactory, 0.4F),
+            ),
             lootProbability = listOf(),     // todo
             maxBosses = 1,
         ),
         LevelDescription(
             levelNum = 3,
-            mobsProbability = listOf(Pair(cockroachFactory, 0.6F), Pair(ratFactory, 0.4F)),
+            mobsProbability = listOf(
+                Pair(passiveCockroachFactory, 0.2F),
+                Pair(aggressiveCockroachFactory, 0.6F),
+                Pair(ratFactory, 0.4F),
+            ),
             lootProbability = listOf(),     // todo
             maxBosses = 4,
         ),
         LevelDescription(
             levelNum = 5,
-            mobsProbability = listOf(Pair(cockroachFactory, 0.3F), Pair(ratFactory, 0.9F)),
+            mobsProbability = listOf(
+                Pair(passiveCockroachFactory, 0.1F),
+                Pair(aggressiveCockroachFactory, 0.3F),
+                Pair(ratFactory, 0.9F),
+            ),
             lootProbability = listOf(),     // todo
             maxBosses = 1,
         )
