@@ -28,8 +28,12 @@ class Cockroach(
     private var curTargetPosY: Float = 0.0f
     private val attackDistance: Float = 25f
     private var lastAttackTime: Long = 0
+    private var lastChangeDirectionPassive: Long = 0
+    private var walkPeriodMillis: Long = 2 * 1000
     private var attackPeriodMillis: Long = 3 * 1000
     private var attackPower: Int = 15
+
+    private var curDir = 0
 
     private val maxHealth = 100
     var health: Int = maxHealth
@@ -59,8 +63,13 @@ class Cockroach(
 
 
     override fun passiveStrategy() {
+        val curTimeMillis = System.currentTimeMillis()
+        if (curTimeMillis - lastChangeDirectionPassive > walkPeriodMillis) {
+            lastChangeDirectionPassive = curTimeMillis
+            curDir = random.nextInt(5)
+        }
         if (health > maxHealth / 5) {
-            when (random.nextInt(5)) {
+            when (curDir) {
                 0 -> {
                     x += currentStep
                 }
