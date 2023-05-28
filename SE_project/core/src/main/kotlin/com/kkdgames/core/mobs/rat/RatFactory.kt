@@ -1,7 +1,6 @@
 package com.kkdgames.core.mobs.rat
 
 import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.kkdgames.core.mobs.Mob
 import com.kkdgames.core.mobs.MobFactory
 import com.kkdgames.core.models.Player
@@ -12,14 +11,18 @@ class RatFactory (
     private val viewportHeight: Float,
     private val viewportWidth: Float,
     private val player: Player,
-    private val strategy: Mob.Companion.Strategies,
+    private val strategy: Rat.Companion.Strategies,
 ): MobFactory {
-    override fun giveMob(): Actor {
+    override fun giveMob(): Mob {
         return Rat(
-            texture = assets.manager.get(Assets.ratTexture),
+            texture = if (strategy != Rat.Companion.Strategies.ATTACKING) {
+                assets.manager.get(Assets.ratTexture)
+            } else {
+                assets.manager.get(Assets.ratAggressiveTexture)
+                   },
             sound = assets.manager.get(Assets.biteSound),
             target = player,
-            height0 = viewportHeight / 3.5f,    // maybe should be changed later
+            heightT = viewportHeight / 3.5f,    // maybe should be changed later
             strategy = strategy,
             spawnPointX = MathUtils.random.nextFloat() * viewportHeight,
             spawnPointY = MathUtils.random.nextFloat() * viewportWidth,
