@@ -108,9 +108,6 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
     }
 
     private fun setupStage() {
-        player
-
-        val cockroachFactory = CockroachFactory(assets, player, viewportHeight, viewportWidth)
         mobGroup.addActor(cockroachFactory.giveMob())
 
         stage.addActor(player)
