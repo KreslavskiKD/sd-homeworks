@@ -104,6 +104,22 @@ class Rat (private val texture: Texture,
         curTargetPosY = y
     }
 
+    override fun receiveDamage(damage: Int) {
+        health = if (health - damage > 0) {
+            health - damage
+        } else {
+            0
+        }
+    }
+
+    override fun receiveHealing(heal: Int) {
+        health = if (health + heal < 100) {
+            health + heal
+        } else {
+            100
+        }
+    }
+
 
     override fun attackingStrategy() {
         currentStep = 4F

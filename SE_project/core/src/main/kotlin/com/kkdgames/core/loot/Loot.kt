@@ -1,4 +1,5 @@
 package com.kkdgames.core.loot
 
-interface Loot {
+abstract class Loot {
+    abstract fun use()
 }

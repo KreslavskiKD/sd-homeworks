@@ -135,6 +135,22 @@ class Cockroach(
         // TODO
     }
 
+    override fun receiveDamage(damage: Int) {
+        health = if (health - damage > 0) {
+            health - damage
+        } else {
+            0
+        }
+    }
+
+    override fun receiveHealing(heal: Int) {
+        health = if (health + heal < 100) {
+            health + heal
+        } else {
+            100
+        }
+    }
+
     override fun draw(batch: Batch, parentAlpha: Float) {
         font.draw(batch, health.toString(), x, y)
         batch.draw(texture, x, y, texture.width * scale, texture.height * scale)

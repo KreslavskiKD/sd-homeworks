@@ -17,6 +17,7 @@ class Assets {
         manager.load(ratTexture)
         manager.load(ratAggressiveTexture)
         manager.load(biteSound)
+        manager.load(drillTexture)
     }
 
     fun dispose() {
@@ -54,10 +55,16 @@ class Assets {
             Texture::class.java
         )
 
+        val drillTexture = AssetDescriptor(
+            "textures/drill.png",
+            Texture::class.java
+        )
+
         val background1 = AssetDescriptor(
             "backgrounds/background1.png",
             Texture::class.java
         )
+
 
         val  biteSound = AssetDescriptor(
             "sounds/mob_bite.wav",
