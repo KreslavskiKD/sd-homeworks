@@ -108,7 +108,9 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
     }
 
     private fun setupStage() {
-        mobGroup.addActor(cockroachFactory.giveMob())
+        for (mob in map.mapRooms[curX][curY].mobs) {
+            mobGroup.addActor(mob)
+        }
 
         stage.addActor(player)
         stage.addActor(mobGroup)
