@@ -10,6 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.viewport.ScalingViewport
 import com.kkdgames.core.MainGame
+import com.kkdgames.core.map.Direction
+import com.kkdgames.core.map.LevelDescription
+import com.kkdgames.core.mobs.cockroach.CockroachFactory
+import com.kkdgames.core.mobs.rat.RatFactory
 import com.kkdgames.core.models.Player
 import com.kkdgames.core.util.Assets
 
@@ -20,6 +24,55 @@ class GameScreen(val game: MainGame, val assets: Assets) : Screen {
 
     private val viewportWidth = 800f
     private val viewportHeight = 480f
+
+    private val mapX = 5
+    private val mapY = 5
+
+    private var curX = 2
+    private var curY = 2
+
+    private val cockroachFactory = CockroachFactory(
+        assets = assets,
+        viewportHeight = viewportHeight,
+        viewportWidth = viewportWidth
+    )
+
+    private val ratFactory = RatFactory(
+        assets = assets,
+        viewportHeight = viewportHeight,
+        viewportWidth = viewportWidth
+    )
+
+    private val levels = listOf(
+        LevelDescription(
+            levelNum = 1,
+            mobsProbability = listOf(Pair(cockroachFactory, 0.4F), Pair(ratFactory, 0.1F)),
+            lootProbability = listOf(),     // todo
+            maxBosses = 1,
+        ),
+        LevelDescription(
+            levelNum = 2,
+            mobsProbability = listOf(Pair(cockroachFactory, 0.4F), Pair(ratFactory, 0.4F)),
+            lootProbability = listOf(),     // todo
+            maxBosses = 1,
+        ),
+        LevelDescription(
+            levelNum = 3,
+            mobsProbability = listOf(Pair(cockroachFactory, 0.6F), Pair(ratFactory, 0.4F)),
+            lootProbability = listOf(),     // todo
+            maxBosses = 4,
+        ),
+        LevelDescription(
+            levelNum = 5,
+            mobsProbability = listOf(Pair(cockroachFactory, 0.3F), Pair(ratFactory, 0.9F)),
+            lootProbability = listOf(),     // todo
+            maxBosses = 1,
+        )
+    )
+
+    private var map = com.kkdgames.core.map.Map(mapX, mapY, levels[0])
+    private var previousDirection = Direction.none  // starting direction - after going through the door on the right it
+                                                    // should be right, so we know, that Player should be drawn on the left side
 
     init {
         camera.setToOrtho(false, viewportWidth, viewportHeight)
@@ -50,16 +103,24 @@ class GameScreen(val game: MainGame, val assets: Assets) : Screen {
 
     override fun render(delta: Float) {
         val backgroundTexture = assets.manager.get(Assets.background1)
-        val backgroundSprite = Sprite(backgroundTexture)
+
+        val wayTexture = assets.manager.get(Assets.wayTexture)
+
         Gdx.gl.glClearColor(0F, 0F, 0.2f, 1F)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
 
         game.batch.begin()
-        backgroundSprite.draw(game.batch, 1F)
+        game.batch.draw(backgroundTexture, viewportWidth / 2, viewportHeight / 2)
+        game.batch.draw(wayTexture, viewportWidth / 2, 0F)
+        game.batch.draw(wayTexture, viewportWidth / 2, viewportHeight)
+        game.batch.draw(wayTexture, 0F, viewportHeight / 2)
+        game.batch.draw(wayTexture, viewportWidth, viewportHeight / 2)
         game.batch.end()
 
         camera.update()
         game.batch.projectionMatrix = camera.combined
+
+
 
         stage.act()
         stage.draw()
