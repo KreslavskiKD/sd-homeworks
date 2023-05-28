@@ -14,32 +14,39 @@ public class Gate {
     private final Texture texture;
     private final float windowWidth;
     private final float windowHeight;
+    private final float offset;
     private final float scale;
+
+    private final float width;
+    private final float height;
 
     private float posX;
     private float posY;
 
-    public Gate(Texture texture, Type type, float windowWidth, float windowHeight) {
+    public Gate(Texture texture, Type type, float windowWidth, float windowHeight, float offset) {
         this.texture = texture;
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
+        this.offset = offset;
         this.scale = windowWidth / 10 / texture.getWidth();
+        width = texture.getWidth();
+        height = texture.getHeight();
         setPos(type);
     }
 
     private void setPos(Type type) {
         switch (type) {
             case LEFT: {
-                posX = 0f;
-                posY = windowHeight / 2 - texture.getHeight() * scale / 2;
+                posX = offset;
+                posY = windowHeight / 2 - height * scale / 2;
             }
             case RIGHT: {
-                posX = windowWidth - texture.getWidth();
-                posY = windowHeight / 2 - texture.getHeight() * scale / 2;
+                posX = windowWidth - width - offset;
+                posY = windowHeight / 2 - height * scale / 2;
             }
             case UPPER: {
-                posX = windowWidth / 2 - texture.getWidth() * scale / 2;
-                posY = windowHeight - texture.getHeight();
+                posX = windowWidth / 2 - width * scale / 2;
+                posY = windowHeight - height;
             }
             case LOWER: {
                 posX = windowWidth / 2 - texture.getWidth() * scale / 2;
@@ -49,7 +56,7 @@ public class Gate {
     }
 
     public void draw(Batch batch) {
-        batch.draw(texture, posX, posY, texture.getWidth() * scale, texture.getHeight() * scale);
+        batch.draw(texture, posX, posY, width * scale, height * scale);
     }
 
     public void dispose() {

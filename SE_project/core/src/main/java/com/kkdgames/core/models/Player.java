@@ -39,7 +39,7 @@ public class Player extends Actor {
 
         inventory = new Array<Loot>();
         health = 100;
-        currentStep = 8F;
+        currentStep = STEP_BASE;
     }
 
     public int getHealth() {
@@ -86,4 +86,8 @@ public class Player extends Actor {
         font.draw(batch, String.valueOf(health), getX(), getY());
         batch.draw(texture, getX(), getY(), texture.getWidth() * getScaleX(), texture.getHeight() * getScaleY());
     }
+
+    private final static float STEP_BASE = 3.5F;
+    private final static float STEP_UP_1 = 4F;
+    private final static float STEP_FULL = 8F;
 }

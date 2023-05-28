@@ -11,8 +11,11 @@ class MainMenuScreen(private var game: MainGame, val assets: Assets):Screen {
 
     private var camera: OrthographicCamera = OrthographicCamera()
 
+    private val viewportWidth = Constants.MAX_WIDTH
+    private val viewportHeight = Constants.MAX_HEIGHT
+
     init {
-        camera.setToOrtho(false, 800f, 480f)
+        camera.setToOrtho(false, viewportWidth, viewportHeight)
     }
 
     override fun render(delta: Float) {

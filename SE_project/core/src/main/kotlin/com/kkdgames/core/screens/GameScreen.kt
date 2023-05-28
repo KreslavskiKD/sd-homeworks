@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.viewport.ScalingViewport
 import com.kkdgames.core.MainGame
@@ -19,14 +18,16 @@ import com.kkdgames.core.mobs.cockroach.CockroachFactory
 import com.kkdgames.core.mobs.rat.RatFactory
 import com.kkdgames.core.models.Gate
 import com.kkdgames.core.models.Player
+import com.kkdgames.core.screens.Constants.MAX_HEIGHT
+import com.kkdgames.core.screens.Constants.MAX_WIDTH
 import com.kkdgames.core.util.Assets
 
-class GameScreen(private val game: MainGame, assets: Assets) : Screen {
+class GameScreen(private val game: MainGame, private val assets: Assets) : Screen {
     private var camera: OrthographicCamera = OrthographicCamera()
     private var stage: Stage
 
-    private val viewportWidth = 800f
-    private val viewportHeight = 480f
+    private val viewportWidth = MAX_WIDTH
+    private val viewportHeight = MAX_HEIGHT
 
     private val mapX = 5
     private val mapY = 5
@@ -34,18 +35,12 @@ class GameScreen(private val game: MainGame, assets: Assets) : Screen {
     private var curX = 2
     private var curY = 2
 
-    private var player: Player = Player(
-        assets.manager.get(Assets.playerFirstStageTexture),
-        viewportHeight / 3.5f,
-        viewportWidth / 2,
-        viewportHeight / 2,
-    )
+    private var player: Player = setupPlayer()
 
     private var mobGroup: Group
 
-    private val backgroundTexture: Texture
-
-    private val gates: Array<Gate>
+    private val backgroundTexture: Texture = assets.manager.get(Assets.background1)
+    private val inventoryTexture: Texture = assets.manager.get(Assets.inventory)
 
     private val passiveCockroachFactory = CockroachFactory(
         assets = assets,
@@ -118,6 +113,11 @@ class GameScreen(private val game: MainGame, assets: Assets) : Screen {
     private var previousDirection = Direction.none     // starting direction - after going through the door on the right it
     // should be right, so we know, that Player should be drawn on the left side
 
+    private val lowerGate: Gate
+    private val upperGate: Gate
+    private val leftGate: Gate
+    private val rightGate: Gate
+
     init {
         camera.setToOrtho(false, viewportWidth, viewportHeight)
 
@@ -134,13 +134,24 @@ class GameScreen(private val game: MainGame, assets: Assets) : Screen {
 
         setupStage()
 
-        backgroundTexture = assets.manager.get(Assets.background1)
-        gates = Array(4)
         val wayTexture = assets.manager.get(Assets.wayTexture)
-        gates.add(Gate(wayTexture, Gate.Type.LEFT, viewportWidth, viewportHeight))
-        gates.add(Gate(wayTexture, Gate.Type.RIGHT, viewportWidth, viewportHeight))
-        gates.add(Gate(wayTexture, Gate.Type.UPPER, viewportWidth, viewportHeight))
-        gates.add(Gate(wayTexture, Gate.Type.LOWER, viewportWidth, viewportHeight))
+        val gatesScreenHeight = backgroundTexture.height.toFloat()
+        val offset = (viewportWidth - gatesScreenHeight) / 2
+
+        lowerGate = Gate(wayTexture, Gate.Type.LOWER, viewportWidth, gatesScreenHeight, offset)
+        upperGate = Gate(wayTexture, Gate.Type.UPPER, viewportWidth, gatesScreenHeight, offset)
+        leftGate = Gate(wayTexture, Gate.Type.LEFT, viewportWidth, gatesScreenHeight, offset)
+        rightGate = Gate(wayTexture, Gate.Type.RIGHT, viewportWidth, gatesScreenHeight, offset)
+    }
+
+    private fun setupPlayer(): Player {
+        val playerTexture = assets.manager.get(Assets.playerFirstStageTexture)
+        return Player(
+            playerTexture,
+            viewportHeight / 5f,
+            viewportWidth / 2 + (playerTexture.width / 2F),
+            viewportHeight / 2 - (playerTexture.height / 2F),
+        )
     }
 
     private fun setupStage() {
@@ -158,11 +169,22 @@ class GameScreen(private val game: MainGame, assets: Assets) : Screen {
 
         game.batch.begin()
 
-        game.batch.draw(backgroundTexture, 0f, 0f)
+        game.batch.draw(
+            inventoryTexture,
+            (viewportWidth - inventoryTexture.width.toFloat()) / 2,
+            backgroundTexture.height.toFloat(),
+        )
 
-        gates.forEach {
-            it.draw(game.batch)
-        }
+        game.batch.draw(
+            backgroundTexture,
+            (viewportWidth - backgroundTexture.width.toFloat()) / 2,
+            0f,
+        )
+
+        lowerGate.draw(game.batch)
+        upperGate.draw(game.batch)
+        leftGate.draw(game.batch)
+        upperGate.draw(game.batch)
 
         game.batch.end()
 
