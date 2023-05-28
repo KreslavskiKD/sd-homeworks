@@ -18,11 +18,12 @@ open class Mob(
     private val target: Player,
     private val height0: Float,
     private val strategy: Strategies,
+    private val attackPower: Int,
+    private val currentStep: Float,
     spawnPointX: Float,
     spawnPointY: Float,
 ) : Actor() {
     private val scale: Float = height0 / texture.height
-    private var currentStep: Float = 4f // may be changed later
 
     private var curTargetPosX: Float = 0.0f
     private var curTargetPosY: Float = 0.0f
@@ -32,7 +33,6 @@ open class Mob(
 
     private var lastAttackTime: Long = 0
     private var attackPeriodMillis: Long = 3 * 1000
-    private var attackPower: Int = 15
 
     private var lastChangeDirectionPassive: Long = 0
     private var walkPeriodMillis: Long = 2 * 1000
