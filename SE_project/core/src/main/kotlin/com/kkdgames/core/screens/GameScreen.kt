@@ -4,8 +4,9 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector3
+import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.viewport.ScalingViewport
@@ -14,10 +15,11 @@ import com.kkdgames.core.map.Direction
 import com.kkdgames.core.map.LevelDescription
 import com.kkdgames.core.mobs.cockroach.CockroachFactory
 import com.kkdgames.core.mobs.rat.RatFactory
+import com.kkdgames.core.mobs.Mob
 import com.kkdgames.core.models.Player
 import com.kkdgames.core.util.Assets
 
-class GameScreen(val game: MainGame, val assets: Assets) : Screen {
+class GameScreen(private val game: MainGame, private val assets: Assets) : Screen {
     private var camera: OrthographicCamera = OrthographicCamera()
     private var touchPos: Vector3
     private var stage: Stage
@@ -31,16 +33,26 @@ class GameScreen(val game: MainGame, val assets: Assets) : Screen {
     private var curX = 2
     private var curY = 2
 
+    private var player: Player = Player(
+        assets.manager.get(Assets.playerFirstStageTexture),
+        viewportHeight / 3.5f,
+        viewportWidth / 2,
+        viewportHeight / 2,
+    )
+
+    private var mobGroup: Group
+
     private val cockroachFactory = CockroachFactory(
         assets = assets,
         viewportHeight = viewportHeight,
-        viewportWidth = viewportWidth
+        viewportWidth = viewportWidth,
+        player = player,
     )
 
     private val ratFactory = RatFactory(
         assets = assets,
         viewportHeight = viewportHeight,
-        viewportWidth = viewportWidth
+        viewportWidth = viewportWidth,
     )
 
     private val levels = listOf(
@@ -70,9 +82,11 @@ class GameScreen(val game: MainGame, val assets: Assets) : Screen {
         )
     )
 
+
     private var map = com.kkdgames.core.map.Map(mapX, mapY, levels[0])
-    private var previousDirection = Direction.none  // starting direction - after going through the door on the right it
-                                                    // should be right, so we know, that Player should be drawn on the left side
+    private var previousDirection = Direction.none     // starting direction - after going through the door on the right it
+    // should be right, so we know, that Player should be drawn on the left side
+
 
     init {
         camera.setToOrtho(false, viewportWidth, viewportHeight)
@@ -83,7 +97,10 @@ class GameScreen(val game: MainGame, val assets: Assets) : Screen {
                 Gdx.graphics.width.toFloat(),
                 Gdx.graphics.height.toFloat(),
                 camera
-            ), game.batch)
+            ), game.batch
+        )
+
+        mobGroup = Group()
 
         setupStage()
 
@@ -91,14 +108,13 @@ class GameScreen(val game: MainGame, val assets: Assets) : Screen {
     }
 
     private fun setupStage() {
-        stage.addActor(
-            Player(
-                assets.manager.get(Assets.playerFirstStageTexture),
-                viewportHeight / 3.5f,
-                viewportWidth / 2,
-                viewportHeight / 2,
-            )
-        )
+        player
+
+        val cockroachFactory = CockroachFactory(assets, player, viewportHeight, viewportWidth)
+        mobGroup.addActor(cockroachFactory.giveMob())
+
+        stage.addActor(player)
+        stage.addActor(mobGroup)
     }
 
     override fun render(delta: Float) {
@@ -120,10 +136,17 @@ class GameScreen(val game: MainGame, val assets: Assets) : Screen {
         camera.update()
         game.batch.projectionMatrix = camera.combined
 
-
-
         stage.act()
+        updateMobsTarget()
         stage.draw()
+    }
+
+    private fun updateMobsTarget() {
+        for (mob: Actor in mobGroup.children) { // maybe we want to add several mobs
+            if (mob is Mob) {
+                mob.setTargetPos(player.centerX, player.centerY)
+            }
+        }
     }
 
     override fun resize(width: Int, height: Int) { }

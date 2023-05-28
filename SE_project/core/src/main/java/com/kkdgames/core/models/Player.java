@@ -2,40 +2,55 @@ package com.kkdgames.core.models;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.kkdgames.core.loot.Loot;
+import util.FontSizeHandler;
 
 public class Player extends Actor {
-    private float posX;
-    private float posY;
-    private final float scale;
-
-    private float currentStep;      // not final because later some loot from inventory can increase the speed
+    private final float currentStep;
 
     private final Texture texture;
     private final Array<Loot> inventory;
     private int health;
+    private final BitmapFont font;
+
+    private final float halvedTextureWidth;
+    private final float halvedTextureHeight;
 
     public Player(Texture texture, float height, float spawnPointX, float spawnPointY) {
         this.texture = texture;
-        this.scale = height / texture.getHeight();
+        float scale = height / texture.getHeight();
+        setScale(scale, scale);
 
-        posX = spawnPointX;
-        posY = spawnPointY;
+        font = FontSizeHandler.INSTANCE.getFont((int) (texture.getWidth() / 2 * getScaleX()), Color.OLIVE);
+
+        halvedTextureWidth = texture.getWidth() / 2f * scale;
+        halvedTextureHeight = texture.getHeight() / 2f * scale;
+        setX(spawnPointX);
+        setY(spawnPointY);
+
+        setX(getCenterX());
+        setY(getCenterY());
+
         inventory = new Array<Loot>();
-        health = 10;
-        currentStep = 2F;
+        health = 100;
+        currentStep = 7F;
     }
 
     public int getHealth() {
         return health;
     }
 
-    public void setHealth(int health) {
-        this.health = health;
+    public void decreaseHealth(int value) {
+        this.health -= value;
+        if (health < 0) {
+            health = 0;
+        }
     }
 
     public Array<Loot> getInventory() {
@@ -45,24 +60,30 @@ public class Player extends Actor {
     @Override
     public void act(float delta) {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
-            posX -= currentStep;
+            moveBy(-currentStep, 0);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-            posX += currentStep;
+            moveBy(currentStep, 0);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-            posY += currentStep;
+            moveBy(0, currentStep);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
-            posY -= currentStep;
+            moveBy(0, -currentStep);
         }
+    }
+
+    public float getCenterX() {
+        return getX() + halvedTextureWidth;
+    }
+
+    public float getCenterY() {
+        return getY() + halvedTextureHeight;
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-
-        batch.draw(texture, posX, posY,
-                texture.getWidth() * scale,
-                texture.getHeight() * scale);
+        font.draw(batch, String.valueOf(health), getX(), getY());
+        batch.draw(texture, getX(), getY(), texture.getWidth() * getScaleX(), texture.getHeight() * getScaleY());
     }
 }
