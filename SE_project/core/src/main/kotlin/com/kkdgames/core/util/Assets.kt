@@ -13,6 +13,8 @@ class Assets {
         manager.load(playerTexture)
         manager.load(background1)
         manager.load(cockroachTexture)
+        manager.load(wayTexture)
+        manager.load(ratTexture)
         manager.load(biteSound)
     }
 
@@ -38,6 +40,11 @@ class Assets {
 
         val ratTexture = AssetDescriptor(
             "textures/rat.png",
+            Texture::class.java
+        )
+
+        val wayTexture = AssetDescriptor(
+            "textures/way.png",
             Texture::class.java
         )
 
