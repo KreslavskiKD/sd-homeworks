@@ -87,11 +87,11 @@ class Cockroach(
         }
     }
 
-    fun getCenterX(): Float {
+    private fun getCenterX(): Float {
         return x + halvedTextureWidth
     }
 
-    fun getCenterY(): Float {
+    private fun getCenterY(): Float {
         return y + halvedTextureHeight
     }
 
