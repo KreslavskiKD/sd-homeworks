@@ -87,7 +87,7 @@ class Cockroach(
                 }
             }
         } else {
-            x += currentStep
+            x += currentStep / 2
         }
     }
 

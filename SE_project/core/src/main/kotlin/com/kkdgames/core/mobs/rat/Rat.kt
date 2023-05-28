@@ -39,6 +39,10 @@ class Rat (private val texture: Texture,
     private val halvedTextureHeight: Float = texture.height / 2f * scale
     private var font: BitmapFont = FontSizeHandler.INSTANCE.getFont((texture.width / 2 * scale).toInt(), Color.DARK_GRAY)
 
+    private var lastChangeDirectionPassive: Long = 0
+    private var walkPeriodMillis: Long = 2 * 1000
+    private var curDir = 0
+
     init {
         x = spawnPointX - texture.width / 2 * scale
         y = spawnPointY - texture.height / 2 * scale
@@ -59,26 +63,31 @@ class Rat (private val texture: Texture,
     }
 
     override fun passiveStrategy() {
-        if (health > 2) {
-            when (MathUtils.random.nextInt(5)) {
+        val curTimeMillis = System.currentTimeMillis()
+        if (curTimeMillis - lastChangeDirectionPassive > walkPeriodMillis) {
+            lastChangeDirectionPassive = curTimeMillis
+            curDir = MathUtils.random.nextInt(5)
+        }
+        if (health > maxHealth / 5) {
+            when (curDir) {
                 0 -> {
-                    posX += currentStep
+                    x += currentStep
                 }
                 1 -> {
-                    posX -= currentStep
+                    x -= currentStep
                 }
                 2 -> {
-                    posY += currentStep
+                    y += currentStep
                 }
                 3 -> {
-                    posY -= currentStep
+                    y -= currentStep
                 }
                 4 -> {
                     // do nothing
                 }
             }
         } else {
-            posX += currentStep
+            x += currentStep / 2
         }
     }
 
