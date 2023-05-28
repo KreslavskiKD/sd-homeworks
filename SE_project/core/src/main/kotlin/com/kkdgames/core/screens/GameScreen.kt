@@ -42,7 +42,7 @@ class GameScreen(val game: MainGame, val assets: Assets) : Screen {
             Player(
                 assets.manager.get(Assets.playerFirstStageTexture),
                 viewportHeight / 3.5f,
-                viewportHeight / 2,     // i wanted player to be spawned in the middle of the screen, yet it doesn't
+                viewportHeight / 2,     // I wanted player to be spawned in the middle of the screen, yet it doesn't
                 viewportWidth / 2,
             )
         )
