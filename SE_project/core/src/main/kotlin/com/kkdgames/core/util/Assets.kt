@@ -28,6 +28,11 @@ class Assets {
             Texture::class.java
         )
 
+        val cockroachTexture = AssetDescriptor(
+            "textures/cockroach.png",
+            Texture::class.java
+        )
+
         val background1 = AssetDescriptor(
             "backgrounds/background1.png",
             Texture::class.java
