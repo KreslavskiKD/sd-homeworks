@@ -258,27 +258,22 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         when (gate.type) {
             Gate.Type.LEFT ->  {
                 currentRoom = currentRoom.left
-                // curX--
-                //player.setPosition(viewportWidth - player.width, viewportHeight / 2f - player.height / 2)
+                player.setPosition(viewportWidth - player.width - gate.width, viewportHeight / 2f - player.height / 2)
             }
             Gate.Type.UPPER -> {
                 currentRoom = currentRoom.top
-                // curY++
-                //player.setPosition(viewportWidth / 2 - player.width / 2, 0f)
+                player.setPosition(viewportWidth / 2 - player.width / 2, gate.height + player.height / 2)
             }
             Gate.Type.LOWER -> {
                 currentRoom = currentRoom.bottom
-                // curY--
-                //player.setPosition(viewportWidth / 2 - player.width / 2, viewportHeight - player.height)
+                player.setPosition(viewportWidth / 2 - player.width / 2, viewportHeight - player.height / 2 - gate.height - 200)
             }
             Gate.Type.RIGHT -> {
                 currentRoom = currentRoom.right
-                //curX++
-                //player.setPosition(0f, viewportHeight / 2f - player.height / 2)
+                player.setPosition(gate.width, viewportHeight / 2f - player.height / 2)
             }
             null -> {}
         }
-        player.setPosition(player.originX, player.originY)
         setupStage()
     }
 

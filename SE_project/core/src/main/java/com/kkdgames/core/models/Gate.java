@@ -53,6 +53,14 @@ public class Gate {
         return posX + width;
     }
 
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
     private void setupPos() {
         switch (type) {
             case LEFT: {
