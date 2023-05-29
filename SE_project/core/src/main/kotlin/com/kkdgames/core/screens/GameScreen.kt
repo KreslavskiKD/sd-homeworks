@@ -173,7 +173,7 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         lowerGate.draw(game.batch)
         upperGate.draw(game.batch)
         leftGate.draw(game.batch)
-        upperGate.draw(game.batch)
+        rightGate.draw(game.batch)
 
         game.batch.end()
 
