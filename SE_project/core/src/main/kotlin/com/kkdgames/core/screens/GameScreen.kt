@@ -72,7 +72,7 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
             mobsProbability = listOf(
                 Pair(passiveCockroachFactory, 0.4F),
                 Pair(aggressiveCockroachFactory, 0.05F),
-                Pair(ratFactory, 1F),       // todo change back
+                Pair(ratFactory, 0.1F),     
             ),
             lootProbability = listOf(),     // todo
             maxBosses = 1,
