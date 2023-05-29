@@ -25,7 +25,7 @@ public class Gate {
         this.texture = texture;
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
-        float scale = windowWidth / 6f / texture.getWidth();
+        float scale = windowWidth / 7f / texture.getWidth();
         width = texture.getWidth() * scale;
         height = texture.getHeight() * scale;
         setPos(type);
@@ -39,9 +39,8 @@ public class Gate {
                 break;
             }
             case RIGHT: {
-                System.out.println(windowWidth);
-                posX = 10;//windowWidth - width * 2;
-                posY = 20;//windowHeight / 2f - height / 2;
+                posX = windowWidth - width;
+                posY = windowHeight / 2f - height / 2;
                 break;
             }
             case UPPER: {
