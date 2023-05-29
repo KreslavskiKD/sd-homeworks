@@ -19,7 +19,6 @@ import com.kkdgames.core.loot.heals.SaladFactory
 import com.kkdgames.core.loot.upgrades.CockroachBodyFactory
 import com.kkdgames.core.loot.weapons.CockroachLegFactory
 import com.kkdgames.core.loot.weapons.DrillFactory
-import com.kkdgames.core.map.Direction
 import com.kkdgames.core.map.LevelDescription
 import com.kkdgames.core.mobs.Mob
 import com.kkdgames.core.mobs.cockroach.CockroachFactory
@@ -52,11 +51,14 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
 
     private val backgroundTexture: Texture = assets.manager.get(Assets.background1)
     private val inventoryTexture: Texture = assets.manager.get(Assets.inventory)
+    private val inventoryHighlightedTexture: Texture = assets.manager.get(Assets.inventoryHighlight)
 
     private val lowerGate: Gate
     private val upperGate: Gate
     private val leftGate: Gate
     private val rightGate: Gate
+
+    private var currentlySelectedItem = 0
 
     private val saladFactory = SaladFactory(
         assets = assets,
@@ -317,7 +319,54 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
                     viewportHeight / 2 - (inventoryTexture.height / 2F),
                 )
 
+                game.batch.draw(
+                    inventoryHighlightedTexture,
+                    viewportWidth / 2 - (inventoryTexture.width / 2F) + inventoryHighlightedTexture.width * currentlySelectedItem,
+                    viewportHeight / 2 - (inventoryTexture.height / 2F),
+                )
+
+                var i = 0
+                player.inventory.forEach {
+                    game.batch.draw(
+                        it.getTexture(),
+                        viewportWidth / 2 - (inventoryTexture.width / 2F) + inventoryHighlightedTexture.width * i,
+                        viewportHeight / 2 - (inventoryTexture.height / 2F),
+                    )
+                    i++
+                }
+
                 game.batch.end()
+
+                if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
+                    currentlySelectedItem = 0
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
+                    currentlySelectedItem = 1
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
+                    currentlySelectedItem = 2
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.NUM_4)) {
+                    currentlySelectedItem = 3
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.NUM_5)) {
+                    currentlySelectedItem = 4
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.NUM_6)) {
+                    currentlySelectedItem = 5
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.NUM_7)) {
+                    currentlySelectedItem = 6
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.NUM_8)) {
+                    currentlySelectedItem = 7
+                }
+
+                if (Gdx.input.isKeyPressed(Input.Keys.U)) {
+                    if (player.inventory.size >= currentlySelectedItem) {
+                        player.inventory[currentlySelectedItem].equip()
+                    }
+                }
 
                 if (Gdx.input.isKeyPressed(Input.Keys.BACKSPACE)) {
                     resume()

@@ -6,8 +6,10 @@ import com.badlogic.gdx.math.Rectangle
 abstract class Loot: Rectangle() {
     var taken: Boolean = false
 
-    abstract fun equip()
+    abstract fun equip(): Boolean
     abstract fun unequip()
+    abstract fun getTexture(): Texture
+
     fun getCenterX(): Float {
         return x + getTexture().width / 2
     }
@@ -15,5 +17,4 @@ abstract class Loot: Rectangle() {
     fun getCenterY(): Float {
         return y + getTexture().height / 2
     }
-    abstract fun getTexture(): Texture
 }

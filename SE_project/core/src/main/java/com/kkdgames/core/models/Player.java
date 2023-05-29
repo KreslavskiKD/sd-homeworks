@@ -122,7 +122,7 @@ public class Player extends Actor {
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.E)) {
-            if (closestLoot != null) {
+            if (closestLoot != null && !closestLoot.getTaken()) {
                 float distToLootX = getCenterX() - closestLoot.getCenterX();
                 float distToLootY = getCenterY() - closestLoot.getCenterY();
                 float absDistToTargetY = distToLootY * distToLootY;

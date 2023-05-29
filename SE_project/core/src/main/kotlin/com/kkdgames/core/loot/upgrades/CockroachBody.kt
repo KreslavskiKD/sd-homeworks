@@ -12,7 +12,7 @@ class CockroachBody(
         this.x = x
         this.y = y
     }
-    override fun equip() {
+    override fun equip(): Boolean {
         TODO("Not yet implemented")
     }
 

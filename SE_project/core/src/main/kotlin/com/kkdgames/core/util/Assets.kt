@@ -12,8 +12,9 @@ class Assets {
         manager.load(playerFirstStageTexture)
         manager.load(playerTexture)
         manager.load(background1)
-        manager.load(inventory)
         manager.load(background2)
+        manager.load(inventory)
+        manager.load(inventoryHighlight)
         manager.load(backgroundMenu)
         manager.load(cockroachTexture)
         manager.load(wayTexture)
@@ -99,6 +100,11 @@ class Assets {
 
         val inventory = AssetDescriptor(
             "backgrounds/inventory.png",
+            Texture::class.java
+        )
+
+        val inventoryHighlight = AssetDescriptor(
+            "backgrounds/inventory-highlighted.png",
             Texture::class.java
         )
 
