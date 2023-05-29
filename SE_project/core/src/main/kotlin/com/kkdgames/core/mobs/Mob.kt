@@ -81,8 +81,15 @@ open class Mob(
         }
     }
 
-    fun dropLoot() {
-        // todo
+    fun dropLoot(): List<Loot> {
+        val dropped = mutableListOf<Loot>()
+        for (loot in droppableLoot) {
+            val proba = random.nextFloat()
+            if (proba <= loot.second) {
+                dropped.add(loot.first.giveLoot(x, y))
+            }
+        }
+        return dropped
     }
 
     fun getCenterX(): Float {

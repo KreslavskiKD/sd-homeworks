@@ -22,6 +22,7 @@ class CockroachFactory(
             strategy = strategy,
             spawnPointX = random.nextFloat() * viewportHeight,
             spawnPointY = random.nextFloat() * viewportWidth,
+            assets = assets,
         )
     }
 }

@@ -22,6 +22,8 @@ class Assets {
         manager.load(biteSound)
         manager.load(drillTexture)
         manager.load(cucumber)
+        manager.load(cockroachBody)
+        manager.load(cockroachLeg)
     }
 
     fun dispose() {
@@ -36,6 +38,16 @@ class Assets {
 
         val playerTexture = AssetDescriptor(
             "textures/pickle-pixel.png",
+            Texture::class.java
+        )
+
+        val cockroachBody = AssetDescriptor(
+            "textures/rick-upgrade.png",
+            Texture::class.java
+        )
+
+        val cockroachLeg = AssetDescriptor(
+            "textures/cockroach-leg.png",
             Texture::class.java
         )
 

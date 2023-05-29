@@ -34,6 +34,9 @@ public class Player extends Actor {
 
     private Mob target;
 
+    private Loot closestLoot = null;
+    private float lootingDistance = 25f;
+
     public Player(Texture texture, Sound attackSound, float height, float spawnPointX, float spawnPointY) {
         this.texture = texture;
         float scale = height / texture.getHeight();
@@ -77,6 +80,10 @@ public class Player extends Actor {
         target = mob;
     }
 
+    public void setClosestLoot(Loot loot) {
+        closestLoot = loot;
+    }
+
     public Array<Loot> getInventory() {
         return inventory;
     }
@@ -115,7 +122,19 @@ public class Player extends Actor {
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.E)) {
-            // pick up item
+            if (closestLoot != null) {
+                float distToLootX = getCenterX() - closestLoot.getCenterX();
+                float distToLootY = getCenterY() - closestLoot.getCenterY();
+                float absDistToTargetY = distToLootY * distToLootY;
+                float absDistToTargetX = distToLootX * distToLootX;
+                float distToLoot = (float) Math.sqrt(absDistToTargetX + absDistToTargetY);
+
+                if ((distToLoot <= lootingDistance)
+                        && inventory.size < 8) {
+                    inventory.add(closestLoot);
+                    closestLoot.setTaken(true);
+                }
+            }
         }
     }
 

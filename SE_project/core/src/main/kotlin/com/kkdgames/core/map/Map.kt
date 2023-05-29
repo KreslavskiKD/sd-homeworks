@@ -7,6 +7,8 @@ class Map(
     private val width : Int,
     private val height : Int,
     levelDescription: LevelDescription,
+    private val viewportWidth: Int,
+    private val viewportHeight: Int,
 ) {
 
     // from top to bottom from left to right
@@ -85,7 +87,10 @@ class Map(
                 for (loot in levelDescription.lootProbability) {
                     val proba = random()
                     if (proba <= loot.second) {
-                        mapRooms[i][j].loot.add(loot.first.giveLoot())
+                        mapRooms[i][j].loot.add(loot.first.giveLoot(
+                            random.nextFloat() * viewportHeight,
+                            random.nextFloat() * viewportWidth,
+                        ))
                     }
                 }
             }
