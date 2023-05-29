@@ -1,7 +1,7 @@
 # sd-homeworks
 Repository for all homeworks on Software Design course at HSE
 
-Это домашнее задание №6
+This is homework №6
 
 # The Pickle Rick Experience: A Roguelike Adventure
 
@@ -32,14 +32,14 @@ Languages:
 
 ### Business
 - Team: two ~~lazy motherfuckers~~ students
-- Time: about 2-3 weeks, but who actually believes that, it will probably take much more
+- Time: about 2-3 weeks, but who actually believes that, it will probably take much more (actually not)
 
 ### Functional
-- Most primitive console or tile graphics (or both)
+- Most primitive textures in at least HD graphics
 - At least 30 fps
 
 ## Roles and usecases
-The only role is player, they can move themselves on a map using WASD, pick up items using E, attack using _space_ and use / wear items frm their inventory.
+The only role is player, they can move themselves on a map using WASD, pick up items using E, attack using _space_ and use / wear items from their inventory.
 
 ### Typical user
 PC user 10+ that want to play games and kill some time.
