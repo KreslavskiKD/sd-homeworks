@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Texture
 import com.kkdgames.core.MainGame
 import com.kkdgames.core.util.Assets
 
@@ -13,6 +14,9 @@ class MainMenuScreen(private var game: MainGame, val assets: Assets):Screen {
 
     private val viewportWidth = Constants.MAX_WIDTH
     private val viewportHeight = Constants.MAX_HEIGHT
+
+
+    private val backgroundTexture: Texture = assets.manager.get(Assets.backgroundMenu)
 
     init {
         camera.setToOrtho(false, viewportWidth, viewportHeight)
@@ -26,8 +30,17 @@ class MainMenuScreen(private var game: MainGame, val assets: Assets):Screen {
         game.batch.projectionMatrix = camera.combined
 
         game.batch.begin()
-        game.font.draw(game.batch, "Welcome", 100f, 150f);
-        game.font.draw(game.batch, "Tap anywhere to begin!", 100f, 100f);
+        game.batch.draw(
+            backgroundTexture,
+            0f,
+            0f,
+        )
+        game.font.draw(
+            game.batch,
+            "Tap anywhere to begin!",
+            viewportWidth / 2 - 100f,
+            100f,
+        )
         game.batch.end()
 
         if (Gdx.input.isTouched) {

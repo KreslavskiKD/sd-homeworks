@@ -149,7 +149,7 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         return Player(
             playerTexture,
             viewportHeight / 5f,
-            viewportWidth / 2 + (playerTexture.width / 2F),
+            viewportWidth / 2 - (playerTexture.width / 2F),
             viewportHeight / 2 - (playerTexture.height / 2F),
         )
     }
