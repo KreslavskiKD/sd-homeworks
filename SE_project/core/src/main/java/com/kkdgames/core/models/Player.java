@@ -58,7 +58,7 @@ public class Player extends Actor {
 
         inventory = new Array<Loot>();
         health = 100;
-        currentStep = STEP_BASE;
+        currentStep = STEP_FULL;
 
         this.attackSound = attackSound;
 
