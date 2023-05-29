@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.viewport.ScalingViewport
 import com.kkdgames.core.MainGame
@@ -19,6 +20,7 @@ import com.kkdgames.core.mobs.cockroach.CockroachFactory
 import com.kkdgames.core.mobs.rat.RatFactory
 import com.kkdgames.core.models.Gate
 import com.kkdgames.core.models.Player
+import com.kkdgames.core.screens.Constants.LEVEL
 import com.kkdgames.core.util.Assets
 import kotlin.system.exitProcess
 
@@ -113,10 +115,7 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
     private var previousDirection = Direction.none     // starting direction - after going through the door on the right it
     // should be right, so we know, that Player should be drawn on the left side
 
-    private val lowerGate: Gate
-    private val upperGate: Gate
-    private val leftGate: Gate
-    private val rightGate: Gate
+    private val gates: com.badlogic.gdx.utils.Array<Gate>
 
     init {
         camera.setToOrtho(false, viewportWidth.toFloat(), viewportHeight.toFloat())
@@ -135,10 +134,13 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         setupStage()
 
         val wayTexture = assets.manager.get(Assets.wayTexture)
-        lowerGate = Gate(wayTexture, Gate.Type.LOWER, viewportWidth, viewportHeight)
-        upperGate = Gate(wayTexture, Gate.Type.UPPER, viewportWidth, viewportHeight)
-        leftGate = Gate(wayTexture, Gate.Type.LEFT, viewportWidth, viewportHeight)
-        rightGate = Gate(wayTexture, Gate.Type.RIGHT, viewportWidth, viewportHeight)
+        val lowerGate = Gate(wayTexture, Gate.Type.LOWER, viewportWidth, viewportHeight)
+        val upperGate = Gate(wayTexture, Gate.Type.UPPER, viewportWidth, viewportHeight)
+        val leftGate = Gate(wayTexture, Gate.Type.LEFT, viewportWidth, viewportHeight)
+        val rightGate = Gate(wayTexture, Gate.Type.RIGHT, viewportWidth, viewportHeight)
+
+        gates = Array(4)
+        gates.add(leftGate, rightGate, lowerGate, upperGate)
     }
 
     private fun setupPlayer(): Player {
@@ -153,7 +155,11 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
     }
 
     private fun setupStage() {
-        for (mob in map.mapRooms[curX][curY].mobs ) {
+        stage.clear()
+        if (LEVEL == DIFFICULTY.EASY) {
+            mobGroup.clear()
+        }
+        for (mob in map.mapRooms[curX][curY].mobs) {
             if ((mob as Mob).health > 0) {
                 mobGroup.addActor(mob)
             }
@@ -181,10 +187,9 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
 
         //game.batch.draw(inventoryTexture, 0f, 0f)
 
-        lowerGate.draw(game.batch)
-        upperGate.draw(game.batch)
-        leftGate.draw(game.batch)
-        rightGate.draw(game.batch)
+        gates.forEach {
+            it.draw(game.batch)
+        }
 
         game.batch.end()
 
@@ -192,6 +197,7 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         updateMobs()
         updateMobsTarget()
         updatePlayerTarget()
+        trackPlayerAndGates()
         stage.draw()
 
         if (player.health <= 0) {
@@ -215,6 +221,52 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
                 }
             }
         }
+    }
+
+    private fun trackPlayerAndGates() {
+        gates.forEach {
+            if (player.centerX <= it.right() && player.centerX >= it.left()
+                && player.centerY <= it.top() && player.centerY >= it.bottom()) {
+                goToNewMap(it)
+                return
+            }
+        }
+    }
+
+    private fun goToNewMap(gate: Gate) {
+        when (gate.type) {
+            Gate.Type.LEFT ->  {
+                curX--
+                //player.setPosition(viewportWidth - player.width, viewportHeight / 2f - player.height / 2)
+            }
+            Gate.Type.UPPER -> {
+                curY++
+                //player.setPosition(viewportWidth / 2 - player.width / 2, 0f)
+            }
+            Gate.Type.LOWER -> {
+                curY--
+                //player.setPosition(viewportWidth / 2 - player.width / 2, viewportHeight - player.height)
+            }
+            Gate.Type.RIGHT -> {
+                curX++
+                //player.setPosition(0f, viewportHeight / 2f - player.height / 2)
+            }
+            null -> {}
+        }
+
+        val maxX = map.mapRooms.size
+        val maxY = map.mapRooms[0].size
+
+        curX %= maxX
+        curY %= maxY
+        if (curX < 0) {
+            curX = maxX - 1
+        }
+        if (curY < 0) {
+            curY = maxY - 1
+        }
+        player.setPosition(player.originX, player.originY)
+        setupStage()
     }
 
     private fun updateMobsTarget() {
