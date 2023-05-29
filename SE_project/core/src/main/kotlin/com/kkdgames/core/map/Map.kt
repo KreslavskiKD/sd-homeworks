@@ -123,35 +123,31 @@ class Map(
         for (direction in directions) {
             when (direction) {
                 Direction.top -> {
-                    if (i > 0) {
+                    if (i > 0 && !mapRooms[i - 1][j].visited) {
                         mapRooms[i][j].top = mapRooms[i - 1][j]
-                        if (dfs(i - 1, j)) {
-                            return true
-                        }
+                        mapRooms[i - 1][j].bottom = mapRooms[i][j]
+                        dfs(i - 1, j)
                     }
                 }
                 Direction.bottom -> {
-                    if (i < height - 1) {
+                    if (i < height - 1 && !mapRooms[i + 1][j].visited) {
                         mapRooms[i][j].bottom = mapRooms[i + 1][j]
-                        if (dfs(i + 1, j)) {
-                            return true
-                        }
+                        mapRooms[i + 1][j].top = mapRooms[i][j]
+                        dfs(i + 1, j)
                     }
                 }
                 Direction.left -> {
-                    if (j > 0) {
+                    if (j > 0 && !mapRooms[i][j - 1].visited) {
                         mapRooms[i][j].left = mapRooms[i][j - 1]
-                        if (dfs(i, j - 1)) {
-                            return true
-                        }
+                        mapRooms[i][j - 1].right = mapRooms[i][j]
+                        dfs(i, j - 1)
                     }
                 }
                 Direction.right -> {
-                    if (j < width - 1) {
+                    if (j < width - 1 && !mapRooms[i][j + 1].visited) {
                         mapRooms[i][j].right = mapRooms[i][j + 1]
-                        if (dfs(i, j + 1)) {
-                            return true
-                        }
+                        mapRooms[i][j + 1].left = mapRooms[i][j]
+                        dfs(i, j + 1)
                     }
                 }
                 Direction.none -> { // bruh wtf it ain't possible

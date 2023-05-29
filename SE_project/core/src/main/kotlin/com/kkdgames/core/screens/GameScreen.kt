@@ -120,7 +120,9 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
     private var previousDirection = Direction.none     // starting direction - after going through the door on the right it
     // should be right, so we know, that Player should be drawn on the left side
 
-    private val gates: com.badlogic.gdx.utils.Array<Gate>
+    private var currentRoom = map.mapRooms[curX][curY]
+
+    private val gates: Array<Gate>
 
     init {
         camera.setToOrtho(false, viewportWidth.toFloat(), viewportHeight.toFloat())
@@ -164,20 +166,20 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         }
 
         gates.clear()
-        if (map.mapRooms[curX][curY].bottom != null) {
+        if (currentRoom.bottom != null) {
             gates.add(lowerGate)
         }
-        if (map.mapRooms[curX][curY].left != null) {
+        if (currentRoom.left != null) {
             gates.add(leftGate)
         }
-        if (map.mapRooms[curX][curY].right != null) {
+        if (currentRoom.right != null) {
             gates.add(rightGate)
         }
-        if (map.mapRooms[curX][curY].top != null) {
+        if (currentRoom.top != null) {
             gates.add(upperGate)
         }
 
-        for (mob in map.mapRooms[curX][curY].mobs) {
+        for (mob in currentRoom.mobs) {
             if ((mob as Mob).health > 0) {
                 mobGroup.addActor(mob)
             }
@@ -235,7 +237,8 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
                 if (mob.health <= 0) {
                     mob.dropLoot()
                     mobGroup.removeActor(mob)
-                    map.mapRooms[curX][curY].mobs.remove(mob)
+                    // map.mapRooms[curX][curY].mobs.remove(mob)
+                    currentRoom.mobs.remove(mob)
                 }
             }
         }
@@ -254,19 +257,23 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
     private fun goToNewMap(gate: Gate) {
         when (gate.type) {
             Gate.Type.LEFT ->  {
-                curX--
+                currentRoom = currentRoom.left
+                // curX--
                 //player.setPosition(viewportWidth - player.width, viewportHeight / 2f - player.height / 2)
             }
             Gate.Type.UPPER -> {
-                curY++
+                currentRoom = currentRoom.top
+                // curY++
                 //player.setPosition(viewportWidth / 2 - player.width / 2, 0f)
             }
             Gate.Type.LOWER -> {
-                curY--
+                currentRoom = currentRoom.bottom
+                // curY--
                 //player.setPosition(viewportWidth / 2 - player.width / 2, viewportHeight - player.height)
             }
             Gate.Type.RIGHT -> {
-                curX++
+                currentRoom = currentRoom.right
+                //curX++
                 //player.setPosition(0f, viewportHeight / 2f - player.height / 2)
             }
             null -> {}

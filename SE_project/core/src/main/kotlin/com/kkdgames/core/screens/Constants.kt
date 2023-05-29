@@ -17,5 +17,5 @@ object Constants {
     var FONT_SIZE = Gdx.graphics.width / 30
     var FONT_SIZE_SMALL = Gdx.graphics.width / 70
 
-    val LEVEL = DIFFICULTY.HARD
+    val LEVEL = DIFFICULTY.EASY
 }
