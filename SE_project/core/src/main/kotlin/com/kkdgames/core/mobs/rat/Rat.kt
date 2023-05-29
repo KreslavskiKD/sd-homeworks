@@ -2,6 +2,9 @@ package com.kkdgames.core.mobs.rat
 
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Texture
+import com.kkdgames.core.loot.heals.SaladFactory
+import com.kkdgames.core.loot.weapons.Drill
+import com.kkdgames.core.loot.weapons.DrillFactory
 import com.kkdgames.core.mobs.Mob
 import com.kkdgames.core.models.Player
 
@@ -23,4 +26,8 @@ class Rat (
     spawnPointY = spawnPointY,
     attackPower = 25,           // maybe also should be settable from factory?
     currentStep = 3F,
+    droppableLoot = listOf(
+        Pair(DrillFactory(), 0.4F),
+        Pair(SaladFactory(), 0.05F),
+    ),
 )

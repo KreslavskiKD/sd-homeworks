@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.MathUtils.random
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.kkdgames.core.loot.Loot
+import com.kkdgames.core.loot.LootFactory
 import com.kkdgames.core.models.Player
 import com.kkdgames.core.screens.Constants.FONT_SIZE
 import util.FontSizeHandler
@@ -22,6 +24,7 @@ open class Mob(
     private val strategy: Strategies,
     private val attackPower: Int,
     private val currentStep: Float,
+    private val droppableLoot: List<Pair<LootFactory, Float>>,
     spawnPointX: Float,
     spawnPointY: Float,
 ) : Actor() {
@@ -71,6 +74,18 @@ open class Mob(
         } else {
             100
         }
+    }
+
+    fun dropLoot() {
+        // todo
+    }
+
+    fun getCenterX(): Float {
+        return x + halvedTextureWidth
+    }
+
+    fun getCenterY(): Float {
+        return y + halvedTextureHeight
     }
 
     override fun act(delta: Float) {
@@ -166,14 +181,6 @@ open class Mob(
                 }
             }
         }
-    }
-
-    private fun getCenterX(): Float {
-        return x + halvedTextureWidth
-    }
-
-    private fun getCenterY(): Float {
-        return y + halvedTextureHeight
     }
 
     companion object {
