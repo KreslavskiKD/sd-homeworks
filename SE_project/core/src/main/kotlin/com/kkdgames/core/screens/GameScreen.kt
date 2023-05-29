@@ -20,6 +20,7 @@ import com.kkdgames.core.mobs.cockroach.CockroachFactory
 import com.kkdgames.core.mobs.rat.RatFactory
 import com.kkdgames.core.models.Gate
 import com.kkdgames.core.models.Player
+import com.kkdgames.core.screens.Constants.LEVEL
 import com.kkdgames.core.util.Assets
 import kotlin.system.exitProcess
 
@@ -155,6 +156,9 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
 
     private fun setupStage() {
         stage.clear()
+        if (LEVEL == DIFFICULTY.EASY) {
+            mobGroup.clear()
+        }
         for (mob in map.mapRooms[curX][curY].mobs) {
             mobGroup.addActor(mob)
         }
