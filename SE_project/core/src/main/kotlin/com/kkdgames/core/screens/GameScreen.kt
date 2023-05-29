@@ -160,7 +160,9 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
             mobGroup.clear()
         }
         for (mob in map.mapRooms[curX][curY].mobs) {
-            mobGroup.addActor(mob)
+            if ((mob as Mob).health > 0) {
+                mobGroup.addActor(mob)
+            }
         }
 
         stage.addActor(player)
@@ -192,6 +194,7 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         game.batch.end()
 
         stage.act()
+        updateMobs()
         updateMobsTarget()
         updatePlayerTarget()
         trackPlayerAndGates()
@@ -205,6 +208,18 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             dispose()
             exitProcess(0)
+        }
+    }
+
+    private fun updateMobs() {
+        for (mob: Actor in mobGroup.children) { // maybe we want to add several mobs
+            if (mob is Mob) {
+                if (mob.health <= 0) {
+                    mob.dropLoot()
+                    mobGroup.removeActor(mob)
+                    map.mapRooms[curX][curY].mobs.remove(mob)
+                }
+            }
         }
     }
 

@@ -97,8 +97,8 @@ public class Player extends Actor {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             if (target != null) {
-                float distToTargetX = getCenterX() - target.getX();
-                float distToTargetY = getCenterY() - target.getY();
+                float distToTargetX = getCenterX() - target.getCenterX();
+                float distToTargetY = getCenterY() - target.getCenterY();
                 float absDistToTargetY = distToTargetY * distToTargetY;
                 float absDistToTargetX = distToTargetX * distToTargetX;
                 float distToTarget = (float) Math.sqrt(absDistToTargetX + absDistToTargetY);
