@@ -12,13 +12,15 @@ class Assets {
         manager.load(playerFirstStageTexture)
         manager.load(playerTexture)
         manager.load(background1)
+        manager.load(inventory)
+        manager.load(background2)
+        manager.load(backgroundMenu)
         manager.load(cockroachTexture)
         manager.load(wayTexture)
         manager.load(ratTexture)
         manager.load(ratAggressiveTexture)
         manager.load(biteSound)
         manager.load(drillTexture)
-        manager.load(inventory)
     }
 
     fun dispose() {
@@ -63,6 +65,16 @@ class Assets {
 
         val background1 = AssetDescriptor(
             "backgrounds/background1.png",
+            Texture::class.java
+        )
+
+        val background2 = AssetDescriptor(
+            "backgrounds/background2.png",
+            Texture::class.java
+        )
+
+        val backgroundMenu = AssetDescriptor(
+            "backgrounds/background-menu.png",
             Texture::class.java
         )
 

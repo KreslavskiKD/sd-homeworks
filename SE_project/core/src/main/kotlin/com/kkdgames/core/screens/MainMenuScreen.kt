@@ -36,7 +36,7 @@ class MainMenuScreen(private var game: MainGame, private val assets: Assets):Scr
         font.draw(game.batch, "Tap anywhere to begin!", 100f, 100f)
         game.batch.end()
 
-        if (Gdx.input.isTouched) {
+        if (Gdx.input.isTouched || Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)) {
             game.screen = GameScreen(game, assets)
             dispose()
         }

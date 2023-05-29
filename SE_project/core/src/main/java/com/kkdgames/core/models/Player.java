@@ -72,6 +72,12 @@ public class Player extends Actor {
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
             moveBy(0, -currentStep);
         }
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            // attack
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.E)) {
+            // pick up item
+        }
     }
 
     public float getCenterX() {
