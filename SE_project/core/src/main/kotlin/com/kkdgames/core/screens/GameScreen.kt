@@ -44,6 +44,11 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
     private val backgroundTexture: Texture = assets.manager.get(Assets.background1)
     private val inventoryTexture: Texture = assets.manager.get(Assets.inventory)
 
+    private val lowerGate: Gate
+    private val upperGate: Gate
+    private val leftGate: Gate
+    private val rightGate: Gate
+
     private val passiveCockroachFactory = CockroachFactory(
         assets = assets,
         viewportHeight = viewportHeight,
@@ -131,16 +136,14 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
 
         mobGroup = Group()
 
-        setupStage()
-
         val wayTexture = assets.manager.get(Assets.wayTexture)
-        val lowerGate = Gate(wayTexture, Gate.Type.LOWER, viewportWidth, viewportHeight)
-        val upperGate = Gate(wayTexture, Gate.Type.UPPER, viewportWidth, viewportHeight)
-        val leftGate = Gate(wayTexture, Gate.Type.LEFT, viewportWidth, viewportHeight)
-        val rightGate = Gate(wayTexture, Gate.Type.RIGHT, viewportWidth, viewportHeight)
+        lowerGate = Gate(wayTexture, Gate.Type.LOWER, viewportWidth, viewportHeight)
+        upperGate = Gate(wayTexture, Gate.Type.UPPER, viewportWidth, viewportHeight)
+        leftGate = Gate(wayTexture, Gate.Type.LEFT, viewportWidth, viewportHeight)
+        rightGate = Gate(wayTexture, Gate.Type.RIGHT, viewportWidth, viewportHeight)
 
-        gates = Array(4)
-        gates.add(leftGate, rightGate, lowerGate, upperGate)
+        gates = Array()
+        setupStage()
     }
 
     private fun setupPlayer(): Player {
@@ -159,6 +162,21 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         if (LEVEL == DIFFICULTY.EASY) {
             mobGroup.clear()
         }
+
+        gates.clear()
+        if (map.mapRooms[curX][curY].bottom != null) {
+            gates.add(lowerGate)
+        }
+        if (map.mapRooms[curX][curY].left != null) {
+            gates.add(leftGate)
+        }
+        if (map.mapRooms[curX][curY].right != null) {
+            gates.add(rightGate)
+        }
+        if (map.mapRooms[curX][curY].top != null) {
+            gates.add(upperGate)
+        }
+
         for (mob in map.mapRooms[curX][curY].mobs) {
             if ((mob as Mob).health > 0) {
                 mobGroup.addActor(mob)
@@ -252,18 +270,6 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
                 //player.setPosition(0f, viewportHeight / 2f - player.height / 2)
             }
             null -> {}
-        }
-
-        val maxX = map.mapRooms.size - 1
-        val maxY = map.mapRooms[0].size - 1
-
-        curX %= maxX
-        curY %= maxY
-        if (curX < 0) {
-            curX = maxX
-        }
-        if (curY < 0) {
-            curY = maxY
         }
         player.setPosition(player.originX, player.originY)
         setupStage()
