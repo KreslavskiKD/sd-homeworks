@@ -146,6 +146,7 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         val playerTexture = assets.manager.get(Assets.playerFirstStageTexture)
         return Player(
             playerTexture,
+            assets.manager.get(Assets.biteSound),
             viewportHeight / 5f,
             viewportWidth / 2 - (playerTexture.width / 2F),
             viewportHeight / 2 - (playerTexture.height / 2F),
@@ -188,8 +189,14 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
 
         stage.act()
         updateMobsTarget()
+        updatePlayerTarget()
         trackPlayerAndGates()
         stage.draw()
+
+        if (player.health <= 0) {
+            game.screen = DeathScreen(game, assets)
+            dispose()
+        }
 
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             dispose()
@@ -249,6 +256,21 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
                 mob.setTargetPos(player.centerX, player.centerY)
             }
         }
+    }
+
+    private fun updatePlayerTarget() {
+        var closestMob: Mob? = null
+        var distMinCur = 1000000F
+        for (mob: Actor in mobGroup.children) { // maybe we want to add several mobs
+            if (mob is Mob) {
+                val distCur = (mob.x - player.x) * (mob.x - player.x) + (mob.y - player.y) * (mob.y - player.y)
+                if (distCur < distMinCur) {
+                    distMinCur = distCur
+                    closestMob = mob
+                }
+            }
+        }
+        player.setTarget(closestMob)
     }
 
     override fun resize(width: Int, height: Int) { }

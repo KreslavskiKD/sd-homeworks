@@ -10,4 +10,5 @@ object Constants {
     const val MIN_HEIGHT = 480f
 
     var FONT_SIZE = Gdx.graphics.width / 30
+    var FONT_SIZE_SMALL = Gdx.graphics.width / 70
 }

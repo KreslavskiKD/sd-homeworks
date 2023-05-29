@@ -2,6 +2,7 @@ package com.kkdgames.core.models;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.kkdgames.core.loot.Loot;
+import com.kkdgames.core.mobs.Mob;
 import com.kkdgames.core.screens.Constants;
 import util.FontSizeHandler;
 
@@ -23,7 +25,16 @@ public class Player extends Actor {
     private final float halvedTextureWidth;
     private final float halvedTextureHeight;
 
-    public Player(Texture texture, float height, float spawnPointX, float spawnPointY) {
+    private float attackDistance = 25f;
+    private long lastAttackTime = 0;
+    private long attackPeriodMillis = 3 * 1000;
+    private int attackPower = 10;
+
+    private Sound attackSound;
+
+    private Mob target;
+
+    public Player(Texture texture, Sound attackSound, float height, float spawnPointX, float spawnPointY) {
         this.texture = texture;
         float scale = height / texture.getHeight();
         setScale(scale, scale);
@@ -45,6 +56,10 @@ public class Player extends Actor {
         inventory = new Array<Loot>();
         health = 100;
         currentStep = STEP_BASE;
+
+        this.attackSound = attackSound;
+
+        target = null;
     }
 
     public int getHealth() {
@@ -56,6 +71,10 @@ public class Player extends Actor {
         if (health < 0) {
             health = 0;
         }
+    }
+
+    public void setTarget(Mob mob) {
+        target = mob;
     }
 
     public Array<Loot> getInventory() {
@@ -77,7 +96,23 @@ public class Player extends Actor {
             moveBy(0, -currentStep);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            // attack
+            if (target != null) {
+                float distToTargetX = getCenterX() - target.getX();
+                float distToTargetY = getCenterY() - target.getY();
+                float absDistToTargetY = distToTargetY * distToTargetY;
+                float absDistToTargetX = distToTargetX * distToTargetX;
+                float distToTarget = (float) Math.sqrt(absDistToTargetX + absDistToTargetY);
+
+                long curTimeMillis = System.currentTimeMillis();
+                if ((distToTarget <= attackDistance)
+                        && curTimeMillis - lastAttackTime > attackPeriodMillis
+                        && target.getHealth() > 0
+                ) {
+                    lastAttackTime = curTimeMillis;
+                    attackSound.play();
+                    target.receiveDamage(attackPower);
+                }
+            }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.E)) {
             // pick up item
