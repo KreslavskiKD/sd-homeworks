@@ -239,11 +239,19 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
                     it.draw(game.batch)
                 }
 
+                val deletedLoot = mutableListOf<Loot>()
+
                 lootOnTheFloor.forEach {
                     it as Loot
                     if (it.taken) {
-                        lootOnTheFloor.remove(it)
+                        deletedLoot.add(it)
                     }
+                }
+
+                lootOnTheFloor.removeAll(deletedLoot)
+
+                lootOnTheFloor.forEach {
+                    it as Loot
                     game.batch.draw(
                         it.getTexture(),
                         it.x,
