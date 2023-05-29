@@ -11,6 +11,7 @@ public class Gate {
         LOWER
     }
 
+    private final Type type;
     private final Texture texture;
     private final int windowWidth;
     private final int windowHeight;
@@ -28,10 +29,31 @@ public class Gate {
         float scale = windowWidth / 7f / texture.getWidth();
         width = texture.getWidth() * scale;
         height = texture.getHeight() * scale;
-        setPos(type);
+        this.type = type;
+        setupPos();
     }
 
-    private void setPos(Type type) {
+    public Type getType() {
+        return type;
+    }
+
+    public float top() {
+        return height + posY;
+    }
+
+    public float bottom() {
+        return posY;
+    }
+
+    public float left() {
+        return posX;
+    }
+
+    public float right() {
+        return posX + width;
+    }
+
+    private void setupPos() {
         switch (type) {
             case LEFT: {
                 posX = 0f;

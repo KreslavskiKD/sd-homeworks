@@ -32,11 +32,15 @@ public class Player extends Actor {
 
         halvedTextureWidth = texture.getWidth() / 2f * scale;
         halvedTextureHeight = texture.getHeight() / 2f * scale;
+
+
         setX(spawnPointX);
         setY(spawnPointY);
 
         setX(getCenterX());
         setY(getCenterY());
+
+        setOrigin(getX(), getY());
 
         inventory = new Array<Loot>();
         health = 100;
