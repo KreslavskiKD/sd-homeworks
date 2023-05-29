@@ -9,7 +9,7 @@ class SaladFactory(
 ): LootFactory {
     override fun giveLoot(x: Float, y: Float): Loot {
         return Salad(
-            assets.manager.get(Assets.cucumber),
+            assets.manager.get(Assets.saladTexture),
             x,
             y,
         )

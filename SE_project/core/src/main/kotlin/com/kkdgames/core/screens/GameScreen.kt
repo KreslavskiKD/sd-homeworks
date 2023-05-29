@@ -16,6 +16,9 @@ import com.badlogic.gdx.utils.viewport.ScalingViewport
 import com.kkdgames.core.MainGame
 import com.kkdgames.core.loot.Loot
 import com.kkdgames.core.loot.heals.SaladFactory
+import com.kkdgames.core.loot.upgrades.CockroachBodyFactory
+import com.kkdgames.core.loot.weapons.CockroachLegFactory
+import com.kkdgames.core.loot.weapons.DrillFactory
 import com.kkdgames.core.map.Direction
 import com.kkdgames.core.map.LevelDescription
 import com.kkdgames.core.mobs.Mob
@@ -56,7 +59,19 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
     private val rightGate: Gate
 
     private val saladFactory = SaladFactory(
-        assets
+        assets = assets,
+    )
+
+    private val drillFactory = DrillFactory(
+        assets = assets,
+    )
+
+    private val cockroachLegFactory = CockroachLegFactory(
+        assets = assets,
+    )
+
+    private val cockroachBodyFactory = CockroachBodyFactory(
+        assets = assets,
     )
 
     private val passiveCockroachFactory = CockroachFactory(
@@ -105,7 +120,8 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
             ),
             lootProbability = listOf(
                 Pair(saladFactory, 0.4F),
-            ),     // todo
+                Pair(drillFactory, 0.1F),
+            ),
             maxBosses = 1,
         ),
         LevelDescription(
@@ -117,7 +133,8 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
             ),
             lootProbability = listOf(
                 Pair(saladFactory, 0.4F),
-            ),     // todo
+                Pair(drillFactory, 0.1F),
+            ),
             maxBosses = 4,
         ),
         LevelDescription(
@@ -129,7 +146,8 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
             ),
             lootProbability = listOf(
                 Pair(saladFactory, 0.4F),
-            ),     // todo
+                Pair(drillFactory, 0.1F),
+            ),
             maxBosses = 1,
         )
     )
