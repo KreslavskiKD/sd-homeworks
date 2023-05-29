@@ -168,7 +168,13 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
 
         game.batch.begin()
 
-        game.batch.draw(backgroundTexture, 0f, 0f, viewportWidth.toFloat(), viewportHeight.toFloat())
+        game.batch.draw(
+            backgroundTexture,
+            0f,
+            0f,
+            viewportWidth.toFloat(),
+            viewportHeight.toFloat(),
+        )
 
         //game.batch.draw(inventoryTexture, 0f, 0f)
 

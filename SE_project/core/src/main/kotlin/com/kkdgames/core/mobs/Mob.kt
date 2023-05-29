@@ -51,6 +51,27 @@ open class Mob(
         y = spawnPointY - texture.height / 2 * scale
     }
 
+    fun setTargetPos(x: Float, y: Float) {
+        curTargetPosX = x
+        curTargetPosY = y
+    }
+
+    fun receiveDamage(damage: Int) {
+        health = if (health - damage > 0) {
+            health - damage
+        } else {
+            0
+        }
+    }
+
+    fun receiveHealing(heal: Int) {
+        health = if (health + heal < 100) {
+            health + heal
+        } else {
+            100
+        }
+    }
+
     override fun act(delta: Float) {
         when (strategy) {
             Strategies.PASSIVE -> {
@@ -65,6 +86,10 @@ open class Mob(
         }
     }
 
+    override fun draw(batch: Batch, parentAlpha: Float) {
+        font.draw(batch, health.toString(), x, y)
+        batch.draw(texture, x, y, texture.width * scale, texture.height * scale)
+    }
 
     private fun passiveStrategy() {
         val curTimeMillis = System.currentTimeMillis()
@@ -93,19 +118,6 @@ open class Mob(
         } else {
             x += currentStep / 2
         }
-    }
-
-    private fun getCenterX(): Float {
-        return x + halvedTextureWidth
-    }
-
-    private fun getCenterY(): Float {
-        return y + halvedTextureHeight
-    }
-
-    fun setTargetPos(x: Float, y: Float) {
-        curTargetPosX = x
-        curTargetPosY = y
     }
 
     private fun attackingStrategy() {
@@ -154,25 +166,12 @@ open class Mob(
         }
     }
 
-    fun receiveDamage(damage: Int) {
-        health = if (health - damage > 0) {
-            health - damage
-        } else {
-            0
-        }
+    private fun getCenterX(): Float {
+        return x + halvedTextureWidth
     }
 
-    fun receiveHealing(heal: Int) {
-        health = if (health + heal < 100) {
-            health + heal
-        } else {
-            100
-        }
-    }
-
-    override fun draw(batch: Batch, parentAlpha: Float) {
-        font.draw(batch, health.toString(), x, y)
-        batch.draw(texture, x, y, texture.width * scale, texture.height * scale)
+    private fun getCenterY(): Float {
+        return y + halvedTextureHeight
     }
 
     companion object {
