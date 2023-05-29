@@ -12,20 +12,20 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.viewport.ScalingViewport
 import com.kkdgames.core.MainGame
-import com.kkdgames.core.screens.Constants.FONT_SIZE
 import com.kkdgames.core.util.Assets
 import util.FontSizeHandler
 import kotlin.system.exitProcess
 
-class MainMenuScreen(private var game: MainGame, private val assets: Assets) : Screen {
+class DeathScreen(private var game: MainGame, private val assets: Assets) : Screen {
     private var camera: OrthographicCamera = OrthographicCamera()
 
     private val viewportWidth = Gdx.graphics.width
     private val viewportHeight = Gdx.graphics.height
 
-    private val backgroundTexture: Texture = assets.manager.get(Assets.backgroundMenu)
+    private val backgroundTexture: Texture = assets.manager.get(Assets.cucumber)
 
-    private val font: BitmapFont = FontSizeHandler.INSTANCE.getFont(FONT_SIZE, Color.WHITE)
+    private val font: BitmapFont = FontSizeHandler.INSTANCE.getFont(Constants.FONT_SIZE, Color.RED)
+    private val fontSmall: BitmapFont = FontSizeHandler.INSTANCE.getFont(Constants.FONT_SIZE, Color.WHITE)
 
     private var stage: Stage
 
@@ -43,23 +43,29 @@ class MainMenuScreen(private var game: MainGame, private val assets: Assets) : S
     }
 
     override fun render(delta: Float) {
-        Gdx.gl.glClearColor(0F, 0F, 0.2f, 1F)
+        Gdx.gl.glClearColor(0F, 0F, 0f, 1F)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
 
         game.batch.begin()
 
         game.batch.draw(
             backgroundTexture,
-            0f,
-            0f,
-            viewportWidth.toFloat(),
-            viewportHeight.toFloat(),
+            viewportWidth / 2 - 500f,
+            viewportHeight / 2 + 100f,
         )
+
         font.draw(
             game.batch,
-            "Tap anywhere to begin!",
-            viewportWidth / 2 - 100f,
-            100f,
+            "DEAD, better luck next time",
+            viewportWidth / 2 - 500f,
+            viewportHeight / 2 - 0f,
+        )
+
+        fontSmall.draw(
+            game.batch,
+            "press space to restart",
+            viewportWidth / 2 - 500f,
+            viewportHeight / 2 - 200f,
         )
 
         game.batch.end()
@@ -70,8 +76,8 @@ class MainMenuScreen(private var game: MainGame, private val assets: Assets) : S
         stage.act()
         stage.draw()
 
-        if (Gdx.input.isTouched || Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
-            game.screen = GameScreen(game, assets)
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            game.screen = MainMenuScreen(game, assets)
             dispose()
         }
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {

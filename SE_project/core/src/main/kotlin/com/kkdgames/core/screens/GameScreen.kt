@@ -72,7 +72,7 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
             mobsProbability = listOf(
                 Pair(passiveCockroachFactory, 0.4F),
                 Pair(aggressiveCockroachFactory, 0.05F),
-                Pair(ratFactory, 0.1F),
+                Pair(ratFactory, 1F),       // todo change back
             ),
             lootProbability = listOf(),     // todo
             maxBosses = 1,
@@ -189,6 +189,11 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         stage.act()
         updateMobsTarget()
         stage.draw()
+
+        if (player.health <= 0) {
+            game.screen = DeathScreen(game, assets)
+            dispose()
+        }
 
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             dispose()
