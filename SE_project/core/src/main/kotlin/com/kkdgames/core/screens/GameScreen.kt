@@ -208,6 +208,7 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
             }
         }
 
+        lootOnTheFloor.clear()
         for (loot in currentRoom.loot) {
             lootOnTheFloor.add(loot)
         }
