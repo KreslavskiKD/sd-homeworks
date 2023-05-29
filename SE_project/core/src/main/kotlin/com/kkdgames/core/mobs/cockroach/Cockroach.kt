@@ -2,11 +2,9 @@ package com.kkdgames.core.mobs.cockroach
 
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Texture
-import com.kkdgames.core.loot.upgrades.CockroachBodyFactory
-import com.kkdgames.core.loot.weapons.CockroachLegFactory
+import com.kkdgames.core.loot.Factories
 import com.kkdgames.core.mobs.Mob
 import com.kkdgames.core.models.Player
-import com.kkdgames.core.util.Assets
 
 class Cockroach(
     texture: Texture,
@@ -16,7 +14,6 @@ class Cockroach(
     strategy: Companion.Strategies,
     spawnPointX: Float,
     spawnPointY: Float,
-    assets: Assets,
 ) : Mob(
     texture = texture,
     sound = sound,
@@ -28,7 +25,7 @@ class Cockroach(
     attackPower = 15,           // maybe also should be settable from factory?
     currentStep = 4F,
     droppableLoot = listOf(
-        Pair(CockroachLegFactory(assets), 0.4F),
-        Pair(CockroachBodyFactory(assets), 0.05F),
+        Pair(Factories.cockroachLegFactory, 0.4F),
+        Pair(Factories.cockroachBodyFactory, 0.05F),
     ),
 )

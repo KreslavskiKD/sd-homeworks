@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Rectangle
 
 abstract class Loot: Rectangle() {
     var taken: Boolean = false
+    var used: Boolean = false
 
     abstract fun equip(): Boolean
     abstract fun unequip()

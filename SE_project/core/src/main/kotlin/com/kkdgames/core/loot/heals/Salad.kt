@@ -2,9 +2,11 @@ package com.kkdgames.core.loot.heals
 
 import com.badlogic.gdx.graphics.Texture
 import com.kkdgames.core.loot.Loot
+import com.kkdgames.core.models.Player
 
 class Salad(
     private val texture: Texture,
+    private val owner: Player,
     x: Float,
     y: Float,
 ) : Loot() {
@@ -14,11 +16,13 @@ class Salad(
     }
 
     override fun equip(): Boolean {
-        TODO("Not yet implemented")
+        owner.heal(15)
+        used = true
+        return false
     }
 
     override fun unequip() {
-        TODO("Not yet implemented")
+
     }
 
     override fun getTexture(): Texture {

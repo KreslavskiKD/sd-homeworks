@@ -14,12 +14,14 @@ import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.viewport.ScalingViewport
 import com.kkdgames.core.MainGame
+import com.kkdgames.core.loot.Factories
 import com.kkdgames.core.loot.Loot
 import com.kkdgames.core.loot.heals.SaladFactory
 import com.kkdgames.core.loot.upgrades.CockroachBodyFactory
 import com.kkdgames.core.loot.weapons.CockroachLegFactory
 import com.kkdgames.core.loot.weapons.DrillFactory
 import com.kkdgames.core.map.LevelDescription
+import com.kkdgames.core.map.Room
 import com.kkdgames.core.mobs.Mob
 import com.kkdgames.core.mobs.cockroach.CockroachFactory
 import com.kkdgames.core.mobs.rat.RatFactory
@@ -60,22 +62,6 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
 
     private var currentlySelectedItem = 0
 
-    private val saladFactory = SaladFactory(
-        assets = assets,
-    )
-
-    private val drillFactory = DrillFactory(
-        assets = assets,
-    )
-
-    private val cockroachLegFactory = CockroachLegFactory(
-        assets = assets,
-    )
-
-    private val cockroachBodyFactory = CockroachBodyFactory(
-        assets = assets,
-    )
-
     private val passiveCockroachFactory = CockroachFactory(
         assets = assets,
         viewportHeight = viewportHeight,
@@ -100,73 +86,101 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         strategy = Mob.Companion.Strategies.ATTACKING,
     )
 
-    private val levels = listOf(
-        LevelDescription(
-            levelNum = 1,
-            mobsProbability = listOf(
-                Pair(passiveCockroachFactory, 0.4F),
-                Pair(aggressiveCockroachFactory, 0.05F),
-                Pair(ratFactory, 0.1F),
-            ),
-            lootProbability = listOf(
-                Pair(saladFactory, 0.4F),
-            ),
-            maxBosses = 1,
-        ),
-        LevelDescription(
-            levelNum = 2,
-            mobsProbability = listOf(
-                Pair(passiveCockroachFactory, 0.4F),
-                Pair(aggressiveCockroachFactory, 0.05F),
-                Pair(ratFactory, 0.4F),
-            ),
-            lootProbability = listOf(
-                Pair(saladFactory, 0.4F),
-                Pair(drillFactory, 0.1F),
-            ),
-            maxBosses = 1,
-        ),
-        LevelDescription(
-            levelNum = 3,
-            mobsProbability = listOf(
-                Pair(passiveCockroachFactory, 0.2F),
-                Pair(aggressiveCockroachFactory, 0.6F),
-                Pair(ratFactory, 0.4F),
-            ),
-            lootProbability = listOf(
-                Pair(saladFactory, 0.4F),
-                Pair(drillFactory, 0.1F),
-            ),
-            maxBosses = 4,
-        ),
-        LevelDescription(
-            levelNum = 5,
-            mobsProbability = listOf(
-                Pair(passiveCockroachFactory, 0.1F),
-                Pair(aggressiveCockroachFactory, 0.3F),
-                Pair(ratFactory, 0.9F),
-            ),
-            lootProbability = listOf(
-                Pair(saladFactory, 0.4F),
-                Pair(drillFactory, 0.1F),
-            ),
-            maxBosses = 1,
-        )
-    )
+    private var levels : List<LevelDescription>
 
-    private var map = com.kkdgames.core.map.Map(
-        mapX,
-        mapY,
-        levels[0],
-        viewportHeight = viewportHeight,
-        viewportWidth = viewportWidth,
-    )
+    private var map : com.kkdgames.core.map.Map
 
-    private var currentRoom = map.mapRooms[curX][curY]
+    private var currentRoom: Room
 
     private val gates: Array<Gate>
 
     init {
+        Factories.drillFactory = DrillFactory(
+            assets = assets,
+            player = player,
+        )
+
+        Factories.saladFactory = SaladFactory(
+            assets = assets,
+            player = player,
+        )
+
+        Factories.cockroachLegFactory = CockroachLegFactory(
+            assets = assets,
+            player = player,
+        )
+
+        Factories.cockroachBodyFactory = CockroachBodyFactory(
+            assets = assets,
+            player = player,
+        )
+
+        levels = listOf(
+            LevelDescription(
+                levelNum = 1,
+                mobsProbability = listOf(
+                    Pair(passiveCockroachFactory, 0.4F),
+                    Pair(aggressiveCockroachFactory, 0.05F),
+                    Pair(ratFactory, 0.1F),
+                ),
+                lootProbability = listOf(
+                    Pair(Factories.saladFactory, 0.4F),
+//                    Pair(Factories.drillFactory, 0.7F),
+ //                   Pair(Factories.cockroachBodyFactory, 0.7F),
+                ),
+                maxBosses = 1,
+            ),
+            LevelDescription(
+                levelNum = 2,
+                mobsProbability = listOf(
+                    Pair(passiveCockroachFactory, 0.4F),
+                    Pair(aggressiveCockroachFactory, 0.05F),
+                    Pair(ratFactory, 0.4F),
+                ),
+                lootProbability = listOf(
+                    Pair(Factories.saladFactory, 0.4F),
+                    Pair(Factories.drillFactory, 0.1F),
+                ),
+                maxBosses = 1,
+            ),
+            LevelDescription(
+                levelNum = 3,
+                mobsProbability = listOf(
+                    Pair(passiveCockroachFactory, 0.2F),
+                    Pair(aggressiveCockroachFactory, 0.6F),
+                    Pair(ratFactory, 0.4F),
+                ),
+                lootProbability = listOf(
+                    Pair(Factories.saladFactory, 0.4F),
+                    Pair(Factories.drillFactory, 0.1F),
+                ),
+                maxBosses = 4,
+            ),
+            LevelDescription(
+                levelNum = 5,
+                mobsProbability = listOf(
+                    Pair(passiveCockroachFactory, 0.1F),
+                    Pair(aggressiveCockroachFactory, 0.3F),
+                    Pair(ratFactory, 0.9F),
+                ),
+                lootProbability = listOf(
+                    Pair(Factories.saladFactory, 0.4F),
+                    Pair(Factories.drillFactory, 0.1F),
+                ),
+                maxBosses = 1,
+            )
+        )
+
+        map = com.kkdgames.core.map.Map(
+            mapX,
+            mapY,
+            levels[0],
+            viewportHeight = viewportHeight,
+            viewportWidth = viewportWidth,
+        )
+
+        currentRoom = map.mapRooms[curX][curY]
+
         camera.setToOrtho(false, viewportWidth.toFloat(), viewportHeight.toFloat())
 
         stage = Stage(
@@ -307,8 +321,7 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
 
             }
             State.PAUSE -> {
-//                Gdx.gl.glClearColor(0F, 0F, 0.2f, 1F)
-//                Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
+
                 camera.update()
                 game.batch.projectionMatrix = camera.combined
                 game.batch.begin()
@@ -363,8 +376,18 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
                 }
 
                 if (Gdx.input.isKeyPressed(Input.Keys.U)) {
-                    if (player.inventory.size >= currentlySelectedItem) {
-                        player.inventory[currentlySelectedItem].equip()
+                    if (player.inventory.size - 1 >= currentlySelectedItem && !player.inventory[currentlySelectedItem].used) {
+                        val loot = player.inventory[currentlySelectedItem]
+                        val stays = loot.equip()
+                        if (!stays) {
+                            player.inventory.remove(loot)
+                        }
+                    }
+                }
+
+                if (Gdx.input.isKeyPressed(Input.Keys.DEL)) {
+                    if (player.inventory.size - 1 >= currentlySelectedItem) {
+                        player.inventory[currentlySelectedItem].unequip()
                     }
                 }
 
@@ -408,19 +431,19 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
     private fun goToNewMap(gate: Gate) {
         when (gate.type) {
             Gate.Type.LEFT ->  {
-                currentRoom = currentRoom.left
+                currentRoom = currentRoom.left!!
                 player.setPosition(viewportWidth - player.width - gate.width, viewportHeight / 2f - player.height / 2)
             }
             Gate.Type.UPPER -> {
-                currentRoom = currentRoom.top
+                currentRoom = currentRoom.top!!
                 player.setPosition(viewportWidth / 2 - player.width / 2, gate.height + player.height / 2)
             }
             Gate.Type.LOWER -> {
-                currentRoom = currentRoom.bottom
+                currentRoom = currentRoom.bottom!!
                 player.setPosition(viewportWidth / 2 - player.width / 2, viewportHeight - player.height / 2 - gate.height - 200)
             }
             Gate.Type.RIGHT -> {
-                currentRoom = currentRoom.right
+                currentRoom = currentRoom.right!!
                 player.setPosition(gate.width, viewportHeight / 2f - player.height / 2)
             }
             null -> {}

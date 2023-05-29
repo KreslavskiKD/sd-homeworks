@@ -14,16 +14,22 @@ import com.kkdgames.core.mobs.Mob;
 import com.kkdgames.core.screens.Constants;
 import util.FontSizeHandler;
 
-public class Player extends Actor {
-    private final float currentStep;
+import java.util.ArrayList;
+import java.util.List;
 
-    private final Texture texture;
-    private final Array<Loot> inventory;
+public class Player extends Actor {
+    private float currentStep;
+
+    private Texture defaultTexture;
+    private Texture texture;
+    private final ArrayList<Loot> inventory;
     private int health;
     private final BitmapFont font;
 
-    private final float halvedTextureWidth;
-    private final float halvedTextureHeight;
+    private float halvedTextureWidth;
+    private float halvedTextureHeight;
+
+    private final float height;
 
     private float attackDistance = 25f;
     private long lastAttackTime = 0;
@@ -38,6 +44,8 @@ public class Player extends Actor {
     private float lootingDistance = 25f;
 
     public Player(Texture texture, Sound attackSound, float height, float spawnPointX, float spawnPointY) {
+        this.height = height;
+        defaultTexture = texture;
         this.texture = texture;
         float scale = height / texture.getHeight();
         setScale(scale, scale);
@@ -56,9 +64,9 @@ public class Player extends Actor {
 
         setOrigin(getX(), getY());
 
-        inventory = new Array<Loot>();
+        inventory = new ArrayList<Loot>();
         health = 100;
-        currentStep = STEP_FULL;
+        currentStep = STEP_BASE;
 
         this.attackSound = attackSound;
 
@@ -76,6 +84,40 @@ public class Player extends Actor {
         }
     }
 
+    public void heal(int value) {
+        this.health += value;
+        if (health > 100) {
+            health = 100;
+        }
+    }
+
+    public void setAttackDistance(float newDistance){
+        attackDistance = newDistance;
+    }
+
+    public void setAttackPeriodMillis(long newPeriod) {
+        attackPeriodMillis = newPeriod;
+    }
+
+    public void setAttackPower(int newAttackPower) {
+        attackPower = newAttackPower;
+    }
+
+    public void setCurrentStep(float newStep) {
+        currentStep = newStep;
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+        float scale = height / texture.getHeight();
+        halvedTextureWidth = texture.getWidth() / 2f * scale;
+        halvedTextureHeight = texture.getHeight() / 2f * scale;
+    }
+
+    public void setDefaultTexture() {
+        texture = defaultTexture;
+    }
+
     public void setTarget(Mob mob) {
         target = mob;
     }
@@ -84,7 +126,7 @@ public class Player extends Actor {
         closestLoot = loot;
     }
 
-    public Array<Loot> getInventory() {
+    public List<Loot> getInventory() {
         return inventory;
     }
 
@@ -130,7 +172,7 @@ public class Player extends Actor {
                 float distToLoot = (float) Math.sqrt(absDistToTargetX + absDistToTargetY);
 
                 if ((distToLoot <= lootingDistance)
-                        && inventory.size < 8) {
+                        && inventory.size() < 8) {
                     inventory.add(closestLoot);
                     closestLoot.setTaken(true);
                 }
@@ -152,7 +194,7 @@ public class Player extends Actor {
         batch.draw(texture, getX(), getY(), texture.getWidth() * getScaleX(), texture.getHeight() * getScaleY());
     }
 
-    private final static float STEP_BASE = 3.5F;
-    private final static float STEP_UP_1 = 4F;
-    private final static float STEP_FULL = 8F;
+    public final static float STEP_BASE = 3.5F;
+    public final static float STEP_UP_1 = 6F;
+    public final static float STEP_FULL = 8F;
 }
