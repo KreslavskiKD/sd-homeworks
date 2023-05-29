@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.kkdgames.core.loot.Loot;
+import com.kkdgames.core.screens.Constants;
 import util.FontSizeHandler;
 
 public class Player extends Actor {
@@ -27,7 +28,7 @@ public class Player extends Actor {
         float scale = height / texture.getHeight();
         setScale(scale, scale);
 
-        font = FontSizeHandler.INSTANCE.getFont((int) (texture.getWidth() / 2 * getScaleX()), Color.OLIVE);
+        font = FontSizeHandler.INSTANCE.getFont(Constants.INSTANCE.getFONT_SIZE(), Color.OLIVE);
 
         halvedTextureWidth = texture.getWidth() / 2f * scale;
         halvedTextureHeight = texture.getHeight() / 2f * scale;

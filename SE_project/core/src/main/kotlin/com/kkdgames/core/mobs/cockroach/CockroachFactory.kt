@@ -9,8 +9,8 @@ import com.kkdgames.core.util.Assets
 class CockroachFactory(
     private val assets: Assets,
     private val player: Player,
-    private val viewportHeight: Float,
-    private val viewportWidth: Float,
+    private val viewportHeight: Int,
+    private val viewportWidth: Int,
     private val strategy: Mob.Companion.Strategies,
 ): MobFactory {
     override fun giveMob(): Mob {

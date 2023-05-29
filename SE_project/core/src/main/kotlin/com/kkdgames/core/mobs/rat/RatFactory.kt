@@ -6,10 +6,10 @@ import com.kkdgames.core.mobs.MobFactory
 import com.kkdgames.core.models.Player
 import com.kkdgames.core.util.Assets
 
-class RatFactory (
+class RatFactory(
     private val assets: Assets,
-    private val viewportHeight: Float,
-    private val viewportWidth: Float,
+    private val viewportHeight: Int,
+    private val viewportWidth: Int,
     private val player: Player,
     private val strategy: Mob.Companion.Strategies,
 ): MobFactory {

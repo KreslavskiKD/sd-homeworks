@@ -2,20 +2,26 @@ package com.kkdgames.core.screens
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Screen
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.kkdgames.core.MainGame
+import com.kkdgames.core.screens.Constants.FONT_SIZE
 import com.kkdgames.core.util.Assets
+import util.FontSizeHandler
 
-class MainMenuScreen(private var game: MainGame, val assets: Assets):Screen {
-
+class MainMenuScreen(private var game: MainGame, private val assets: Assets):Screen {
     private var camera: OrthographicCamera = OrthographicCamera()
 
-    private val viewportWidth = Constants.MAX_WIDTH
-    private val viewportHeight = Constants.MAX_HEIGHT
+    private val viewportWidth = Gdx.graphics.width
+    private val viewportHeight = Gdx.graphics.height
+
+    private val font: BitmapFont
 
     init {
-        camera.setToOrtho(false, viewportWidth, viewportHeight)
+        camera.setToOrtho(false, viewportWidth.toFloat(), viewportHeight.toFloat())
+        font = FontSizeHandler.INSTANCE.getFont(FONT_SIZE, Color.BROWN)
     }
 
     override fun render(delta: Float) {
@@ -26,8 +32,8 @@ class MainMenuScreen(private var game: MainGame, val assets: Assets):Screen {
         game.batch.projectionMatrix = camera.combined
 
         game.batch.begin()
-        game.font.draw(game.batch, "Welcome", 100f, 150f);
-        game.font.draw(game.batch, "Tap anywhere to begin!", 100f, 100f);
+        font.draw(game.batch, "Welcome", 100f, 150f)
+        font.draw(game.batch, "Tap anywhere to begin!", 100f, 100f)
         game.batch.end()
 
         if (Gdx.input.isTouched) {

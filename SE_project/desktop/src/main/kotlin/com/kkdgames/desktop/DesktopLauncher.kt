@@ -10,7 +10,7 @@ object DesktopLauncher {
     fun main(args: Array<String>) {
         val config = Lwjgl3ApplicationConfiguration()
         config.setTitle("The Pickle Rick Experience")
-        config.setWindowSizeLimits(960, 540, -1, -1)
+        config.setWindowSizeLimits(1280, 720, -1, -1)
         config.useVsync(true)
 
         Lwjgl3Application(MainGame(), config)
