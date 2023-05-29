@@ -12,6 +12,7 @@ import com.kkdgames.core.screens.Constants.FONT_SIZE
 import util.FontSizeHandler
 import kotlin.math.abs
 import kotlin.math.sign
+import kotlin.math.sqrt
 
 open class Mob(
     private val texture: Texture,
@@ -123,21 +124,22 @@ open class Mob(
     private fun attackingStrategy() {
         val distToTargetX = getCenterX() - curTargetPosX
         val distToTargetY = getCenterY() - curTargetPosY
-        val absDistToTargetY = abs(distToTargetY)
-        val absDistToTargetX = abs(distToTargetX)
+        val absDistToTargetY = distToTargetY * distToTargetY
+        val absDistToTargetX = distToTargetX * distToTargetX
+        val distToTarget = sqrt(absDistToTargetX + absDistToTargetY)
 
         if (absDistToTargetY > absDistToTargetX) {
-            if (absDistToTargetY > attackDistance) {
+            if (distToTarget > attackDistance) {
                 y -= sign(distToTargetY) * currentStep
             }
         } else {
-            if (absDistToTargetX > attackDistance) {
+            if (distToTarget > attackDistance) {
                 x -= sign(distToTargetX) * currentStep
             }
         }
 
         val curTimeMillis = System.currentTimeMillis()
-        if ((absDistToTargetX <= attackDistance && absDistToTargetY <= attackDistance)
+        if ((distToTarget <= attackDistance)
             && curTimeMillis - lastAttackTime > attackPeriodMillis
             && target.health > 0
         ) {

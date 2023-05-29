@@ -72,7 +72,7 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
             mobsProbability = listOf(
                 Pair(passiveCockroachFactory, 0.4F),
                 Pair(aggressiveCockroachFactory, 0.05F),
-                Pair(ratFactory, 0.1F),     
+                Pair(ratFactory, 0.1F),
             ),
             lootProbability = listOf(),     // todo
             maxBosses = 1,
@@ -145,6 +145,7 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         val playerTexture = assets.manager.get(Assets.playerFirstStageTexture)
         return Player(
             playerTexture,
+            assets.manager.get(Assets.biteSound),
             viewportHeight / 5f,
             viewportWidth / 2 - (playerTexture.width / 2F),
             viewportHeight / 2 - (playerTexture.height / 2F),
@@ -187,6 +188,7 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
 
         stage.act()
         updateMobsTarget()
+        updatePlayerTarget()
         stage.draw()
 
         if (player.health <= 0) {
@@ -206,6 +208,21 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
                 mob.setTargetPos(player.centerX, player.centerY)
             }
         }
+    }
+
+    private fun updatePlayerTarget() {
+        var closestMob: Mob? = null
+        var distMinCur = 1000000F
+        for (mob: Actor in mobGroup.children) { // maybe we want to add several mobs
+            if (mob is Mob) {
+                val distCur = (mob.x - player.x) * (mob.x - player.x) + (mob.y - player.y) * (mob.y - player.y)
+                if (distCur < distMinCur) {
+                    distMinCur = distCur
+                    closestMob = mob
+                }
+            }
+        }
+        player.setTarget(closestMob)
     }
 
     override fun resize(width: Int, height: Int) { }
