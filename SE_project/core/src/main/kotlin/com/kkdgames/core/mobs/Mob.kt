@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.MathUtils.random
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.kkdgames.core.models.Player
+import com.kkdgames.core.screens.Constants.FONT_SIZE
 import util.FontSizeHandler
 import kotlin.math.abs
 import kotlin.math.sign
@@ -43,7 +44,7 @@ open class Mob(
 
     private val halvedTextureWidth: Float = texture.width / 2f * scale
     private val halvedTextureHeight: Float = texture.height / 2f * scale
-    private var font: BitmapFont = FontSizeHandler.INSTANCE.getFont((texture.width / 2 * scale).toInt(), Color.DARK_GRAY)
+    private var font: BitmapFont = FontSizeHandler.INSTANCE.getFont(FONT_SIZE, Color.DARK_GRAY)
 
     init {
         x = spawnPointX - texture.width / 2 * scale

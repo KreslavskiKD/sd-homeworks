@@ -12,10 +12,8 @@ public class Gate {
     }
 
     private final Texture texture;
-    private final float windowWidth;
-    private final float windowHeight;
-    private final float offset;
-    private final float scale;
+    private final int windowWidth;
+    private final int windowHeight;
 
     private final float width;
     private final float height;
@@ -23,40 +21,44 @@ public class Gate {
     private float posX;
     private float posY;
 
-    public Gate(Texture texture, Type type, float windowWidth, float windowHeight, float offset) {
+    public Gate(Texture texture, Type type, int windowWidth, int windowHeight) {
         this.texture = texture;
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
-        this.offset = offset;
-        this.scale = windowWidth / 10 / texture.getWidth();
-        width = texture.getWidth();
-        height = texture.getHeight();
+        float scale = windowWidth / 6f / texture.getWidth();
+        width = texture.getWidth() * scale;
+        height = texture.getHeight() * scale;
         setPos(type);
     }
 
     private void setPos(Type type) {
         switch (type) {
             case LEFT: {
-                posX = offset;
-                posY = windowHeight / 2 - height * scale / 2;
+                posX = 0f;
+                posY = windowHeight / 2f - height / 2;
+                break;
             }
             case RIGHT: {
-                posX = windowWidth - width - offset;
-                posY = windowHeight / 2 - height * scale / 2;
+                System.out.println(windowWidth);
+                posX = 10;//windowWidth - width * 2;
+                posY = 20;//windowHeight / 2f - height / 2;
+                break;
             }
             case UPPER: {
-                posX = windowWidth / 2 - width * scale / 2;
+                posX = windowWidth / 2f - width / 2;
                 posY = windowHeight - height;
+                break;
             }
             case LOWER: {
-                posX = windowWidth / 2 - texture.getWidth() * scale / 2;
+                posX = windowWidth / 2f - width / 2f;
                 posY = 0f;
+                break;
             }
         }
     }
 
     public void draw(Batch batch) {
-        batch.draw(texture, posX, posY, width * scale, height * scale);
+        batch.draw(texture, posX, posY, width, height);
     }
 
     public void dispose() {

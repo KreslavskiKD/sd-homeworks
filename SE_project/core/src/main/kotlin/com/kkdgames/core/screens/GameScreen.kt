@@ -1,6 +1,7 @@
 package com.kkdgames.core.screens
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -18,16 +19,15 @@ import com.kkdgames.core.mobs.cockroach.CockroachFactory
 import com.kkdgames.core.mobs.rat.RatFactory
 import com.kkdgames.core.models.Gate
 import com.kkdgames.core.models.Player
-import com.kkdgames.core.screens.Constants.MAX_HEIGHT
-import com.kkdgames.core.screens.Constants.MAX_WIDTH
 import com.kkdgames.core.util.Assets
+import kotlin.system.exitProcess
 
 class GameScreen(private val game: MainGame, private val assets: Assets) : Screen {
     private var camera: OrthographicCamera = OrthographicCamera()
     private var stage: Stage
 
-    private val viewportWidth = MAX_WIDTH
-    private val viewportHeight = MAX_HEIGHT
+    private val viewportWidth = Gdx.graphics.width
+    private val viewportHeight = Gdx.graphics.height
 
     private val mapX = 5
     private val mapY = 5
@@ -119,7 +119,7 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
     private val rightGate: Gate
 
     init {
-        camera.setToOrtho(false, viewportWidth, viewportHeight)
+        camera.setToOrtho(false, viewportWidth.toFloat(), viewportHeight.toFloat())
 
         stage = Stage(
             ScalingViewport(
@@ -135,13 +135,10 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         setupStage()
 
         val wayTexture = assets.manager.get(Assets.wayTexture)
-        val gatesScreenHeight = backgroundTexture.height.toFloat()
-        val offset = (viewportWidth - gatesScreenHeight) / 2
-
-        lowerGate = Gate(wayTexture, Gate.Type.LOWER, viewportWidth, gatesScreenHeight, offset)
-        upperGate = Gate(wayTexture, Gate.Type.UPPER, viewportWidth, gatesScreenHeight, offset)
-        leftGate = Gate(wayTexture, Gate.Type.LEFT, viewportWidth, gatesScreenHeight, offset)
-        rightGate = Gate(wayTexture, Gate.Type.RIGHT, viewportWidth, gatesScreenHeight, offset)
+        lowerGate = Gate(wayTexture, Gate.Type.LOWER, viewportWidth, viewportHeight)
+        upperGate = Gate(wayTexture, Gate.Type.UPPER, viewportWidth, viewportHeight)
+        leftGate = Gate(wayTexture, Gate.Type.LEFT, viewportWidth, viewportHeight)
+        rightGate = Gate(wayTexture, Gate.Type.RIGHT, viewportWidth, viewportHeight)
     }
 
     private fun setupPlayer(): Player {
@@ -169,17 +166,9 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
 
         game.batch.begin()
 
-        game.batch.draw(
-            inventoryTexture,
-            (viewportWidth - inventoryTexture.width.toFloat()) / 2,
-            backgroundTexture.height.toFloat(),
-        )
+        game.batch.draw(backgroundTexture, 0f, 0f, viewportWidth.toFloat(), viewportHeight.toFloat())
 
-        game.batch.draw(
-            backgroundTexture,
-            (viewportWidth - backgroundTexture.width.toFloat()) / 2,
-            0f,
-        )
+        //game.batch.draw(inventoryTexture, 0f, 0f)
 
         lowerGate.draw(game.batch)
         upperGate.draw(game.batch)
@@ -194,6 +183,11 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         stage.act()
         updateMobsTarget()
         stage.draw()
+
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+            dispose()
+            exitProcess(0)
+        }
     }
 
     private fun updateMobsTarget() {
