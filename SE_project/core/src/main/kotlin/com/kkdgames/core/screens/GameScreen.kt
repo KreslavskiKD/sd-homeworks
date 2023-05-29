@@ -239,16 +239,16 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
             null -> {}
         }
 
-        val maxX = map.mapRooms.size
-        val maxY = map.mapRooms[0].size
+        val maxX = map.mapRooms.size - 1
+        val maxY = map.mapRooms[0].size - 1
 
         curX %= maxX
         curY %= maxY
         if (curX < 0) {
-            curX = maxX - 1
+            curX = maxX
         }
         if (curY < 0) {
-            curY = maxY - 1
+            curY = maxY
         }
         player.setPosition(player.originX, player.originY)
         setupStage()

@@ -1,5 +1,6 @@
 package com.kkdgames.core.mobs
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
@@ -48,8 +49,12 @@ open class Mob(
     private var font: BitmapFont = FontSizeHandler.INSTANCE.getFont(FONT_SIZE, Color.DARK_GRAY)
 
     init {
-        x = spawnPointX - texture.width / 2 * scale
-        y = spawnPointY - texture.height / 2 * scale
+        height = texture.height * scale
+        width = texture.width * scale
+
+
+        x = spawnPointX % Gdx.graphics.width  - width / 2
+        y = spawnPointY % Gdx.graphics.height - height / 2
     }
 
     fun setTargetPos(x: Float, y: Float) {
@@ -101,23 +106,33 @@ open class Mob(
         if (health > maxHealth / 5) {
             when (curDir) {
                 0 -> {
-                    x += currentStep
+                    if (x < Gdx.graphics.width - width) {
+                        x += currentStep
+                    }
                 }
                 1 -> {
-                    x -= currentStep
+                    if (x > 0) {
+                        x -= currentStep
+                    }
                 }
                 2 -> {
-                    y += currentStep
+                    if (y < Gdx.graphics.height - height) {
+                        y += currentStep
+                    }
                 }
                 3 -> {
-                    y -= currentStep
+                    if (y > 0) {
+                        y -= currentStep
+                    }
                 }
                 4 -> {
                     // do nothing
                 }
             }
         } else {
-            x += currentStep / 2
+            if (x < Gdx.graphics.width - width) {
+                x += currentStep / 2
+            }
         }
     }
 
