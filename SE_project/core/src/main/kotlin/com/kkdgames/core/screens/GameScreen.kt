@@ -163,6 +163,8 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
     override fun render(delta: Float) {
         Gdx.gl.glClearColor(0F, 0F, 0.2f, 1F)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
+        camera.update()
+        game.batch.projectionMatrix = camera.combined
 
         game.batch.begin()
 
@@ -182,9 +184,6 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         rightGate.draw(game.batch)
 
         game.batch.end()
-
-        camera.update()
-        game.batch.projectionMatrix = camera.combined
 
         stage.act()
         updateMobsTarget()
