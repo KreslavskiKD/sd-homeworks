@@ -1,5 +1,5 @@
 package com.kkdgames.core.loot
 
 interface LootFactory {
-    fun giveLoot(): Loot
+    fun giveLoot(x: Float, y: Float): Loot
 }

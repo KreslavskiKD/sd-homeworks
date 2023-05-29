@@ -2,9 +2,16 @@ package com.kkdgames.core.loot.weapons
 
 import com.kkdgames.core.loot.Loot
 import com.kkdgames.core.loot.LootFactory
+import com.kkdgames.core.util.Assets
 
-class DrillFactory: LootFactory {
-    override fun giveLoot(): Loot {
-        return Drill()
+class DrillFactory(
+    private val assets: Assets,
+): LootFactory {
+    override fun giveLoot(x: Float, y: Float): Loot {
+        return Drill(
+            assets.manager.get(Assets.drillTexture),
+            x,
+            y,
+        )
     }
 }

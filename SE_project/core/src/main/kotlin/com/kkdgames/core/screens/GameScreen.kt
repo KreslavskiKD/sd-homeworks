@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -13,6 +14,8 @@ import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.viewport.ScalingViewport
 import com.kkdgames.core.MainGame
+import com.kkdgames.core.loot.Loot
+import com.kkdgames.core.loot.heals.SaladFactory
 import com.kkdgames.core.map.Direction
 import com.kkdgames.core.map.LevelDescription
 import com.kkdgames.core.mobs.Mob
@@ -37,9 +40,12 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
     private var curX = 2
     private var curY = 2
 
+    private var state = State.RUN
+
     private var player: Player = setupPlayer()
 
     private var mobGroup: Group
+    private var lootOnTheFloor: MutableList<Rectangle>
 
     private val backgroundTexture: Texture = assets.manager.get(Assets.background1)
     private val inventoryTexture: Texture = assets.manager.get(Assets.inventory)
@@ -48,6 +54,10 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
     private val upperGate: Gate
     private val leftGate: Gate
     private val rightGate: Gate
+
+    private val saladFactory = SaladFactory(
+        assets
+    )
 
     private val passiveCockroachFactory = CockroachFactory(
         assets = assets,
@@ -81,7 +91,9 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
                 Pair(aggressiveCockroachFactory, 0.05F),
                 Pair(ratFactory, 0.1F),
             ),
-            lootProbability = listOf(),     // todo
+            lootProbability = listOf(
+                Pair(saladFactory, 0.4F),
+            ),
             maxBosses = 1,
         ),
         LevelDescription(
@@ -91,7 +103,9 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
                 Pair(aggressiveCockroachFactory, 0.05F),
                 Pair(ratFactory, 0.4F),
             ),
-            lootProbability = listOf(),     // todo
+            lootProbability = listOf(
+                Pair(saladFactory, 0.4F),
+            ),     // todo
             maxBosses = 1,
         ),
         LevelDescription(
@@ -101,7 +115,9 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
                 Pair(aggressiveCockroachFactory, 0.6F),
                 Pair(ratFactory, 0.4F),
             ),
-            lootProbability = listOf(),     // todo
+            lootProbability = listOf(
+                Pair(saladFactory, 0.4F),
+            ),     // todo
             maxBosses = 4,
         ),
         LevelDescription(
@@ -111,14 +127,20 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
                 Pair(aggressiveCockroachFactory, 0.3F),
                 Pair(ratFactory, 0.9F),
             ),
-            lootProbability = listOf(),     // todo
+            lootProbability = listOf(
+                Pair(saladFactory, 0.4F),
+            ),     // todo
             maxBosses = 1,
         )
     )
 
-    private var map = com.kkdgames.core.map.Map(mapX, mapY, levels[0])
-    private var previousDirection = Direction.none     // starting direction - after going through the door on the right it
-    // should be right, so we know, that Player should be drawn on the left side
+    private var map = com.kkdgames.core.map.Map(
+        mapX,
+        mapY,
+        levels[0],
+        viewportHeight = viewportHeight,
+        viewportWidth = viewportWidth,
+    )
 
     private var currentRoom = map.mapRooms[curX][curY]
 
@@ -137,6 +159,7 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         )
 
         mobGroup = Group()
+        lootOnTheFloor = mutableListOf()
 
         val wayTexture = assets.manager.get(Assets.wayTexture)
         lowerGate = Gate(wayTexture, Gate.Type.LOWER, viewportWidth, viewportHeight)
@@ -185,49 +208,100 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
             }
         }
 
+        for (loot in currentRoom.loot) {
+            lootOnTheFloor.add(loot)
+        }
+
         stage.addActor(player)
         stage.addActor(mobGroup)
     }
 
     override fun render(delta: Float) {
-        Gdx.gl.glClearColor(0F, 0F, 0.2f, 1F)
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
-        camera.update()
-        game.batch.projectionMatrix = camera.combined
 
-        game.batch.begin()
+        when (state) {
+            State.RUN -> {
+                Gdx.gl.glClearColor(0F, 0F, 0.2f, 1F)
+                Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
+                camera.update()
+                game.batch.projectionMatrix = camera.combined
 
-        game.batch.draw(
-            backgroundTexture,
-            0f,
-            0f,
-            viewportWidth.toFloat(),
-            viewportHeight.toFloat(),
-        )
+                game.batch.begin()
 
-        //game.batch.draw(inventoryTexture, 0f, 0f)
+                game.batch.draw(
+                    backgroundTexture,
+                    0f,
+                    0f,
+                    viewportWidth.toFloat(),
+                    viewportHeight.toFloat(),
+                )
 
-        gates.forEach {
-            it.draw(game.batch)
-        }
+                gates.forEach {
+                    it.draw(game.batch)
+                }
 
-        game.batch.end()
+                lootOnTheFloor.forEach {
+                    it as Loot
+                    if (it.taken) {
+                        lootOnTheFloor.remove(it)
+                    }
+                    game.batch.draw(
+                        it.getTexture(),
+                        it.x,
+                        it.y,
+                    )
+                }
 
-        stage.act()
-        updateMobs()
-        updateMobsTarget()
-        updatePlayerTarget()
-        trackPlayerAndGates()
-        stage.draw()
+                game.batch.end()
 
-        if (player.health <= 0) {
-            game.screen = DeathScreen(game, assets)
-            dispose()
-        }
+                stage.act()
+                updateMobs()
+                updateMobsTarget()
+                updatePlayerTarget()
+                updatePlayerClosestLoot()
+                trackPlayerAndGates()
+                stage.draw()
 
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            dispose()
-            exitProcess(0)
+                if (player.health <= 0) {
+                    game.screen = DeathScreen(game, assets)
+                    dispose()
+                }
+
+                if (Gdx.input.isKeyPressed(Input.Keys.I)) {
+                    pause()
+
+                }
+
+                if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+                    dispose()
+                    exitProcess(0)
+                }
+
+            }
+            State.PAUSE -> {
+//                Gdx.gl.glClearColor(0F, 0F, 0.2f, 1F)
+//                Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
+                camera.update()
+                game.batch.projectionMatrix = camera.combined
+                game.batch.begin()
+
+                game.batch.draw(
+                    inventoryTexture,
+                    viewportWidth / 2 - (inventoryTexture.width / 2F),
+                    viewportHeight / 2 - (inventoryTexture.height / 2F),
+                )
+
+                game.batch.end()
+
+                if (Gdx.input.isKeyPressed(Input.Keys.BACKSPACE)) {
+                    resume()
+                }
+            }
+            State.RESUME -> {
+                state = State.RUN
+            }
+            else -> {
+                state = State.RUN
+            }
         }
     }
 
@@ -235,7 +309,8 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         for (mob: Actor in mobGroup.children) { // maybe we want to add several mobs
             if (mob is Mob) {
                 if (mob.health <= 0) {
-                    mob.dropLoot()
+                    val loot = mob.dropLoot()
+                    currentRoom.loot.addAll(loot)
                     mobGroup.removeActor(mob)
                     // map.mapRooms[curX][curY].mobs.remove(mob)
                     currentRoom.mobs.remove(mob)
@@ -305,10 +380,29 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
         player.setTarget(closestMob)
     }
 
+    private fun updatePlayerClosestLoot() {
+        var closestLoot: Loot? = null
+        var distMinCur = 1000000F
+        for (loot in lootOnTheFloor) {
+            val distCur = (loot.x - player.x) * (loot.x - player.x) + (loot.y - player.y) * (loot.y - player.y)
+            if (distCur < distMinCur) {
+                distMinCur = distCur
+                closestLoot = loot as Loot?
+            }
+        }
+        player.setClosestLoot(closestLoot)
+    }
+
     override fun resize(width: Int, height: Int) { }
     override fun hide() { }
-    override fun pause() { }
-    override fun resume() { }
+
+    override fun pause() {
+        this.state = State.PAUSE
+    }
+
+    override fun resume() {
+        this.state = State.RESUME
+    }
 
     override fun show() {
         Gdx.input.inputProcessor = stage
@@ -316,5 +410,9 @@ class GameScreen(private val game: MainGame, private val assets: Assets) : Scree
 
     override fun dispose() {
         stage.dispose()
+    }
+
+    enum class State {
+        PAUSE, RUN, RESUME, STOPPED
     }
 }

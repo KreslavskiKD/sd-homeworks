@@ -26,6 +26,7 @@ class RatFactory(
             strategy = strategy,
             spawnPointX = MathUtils.random.nextFloat() * viewportHeight,
             spawnPointY = MathUtils.random.nextFloat() * viewportWidth,
+            assets = assets,
         )
     }
 }
